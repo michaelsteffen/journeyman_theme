@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>The Big Trip</title>
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="screen.css" />
+    <link rel="stylesheet" type="text/css" href="new_css.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+	<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+	<link rel='stylesheet' href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css'  />
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src='underscore-min.js'></script>
+</head>
+
+<body class="post-template post-0">
+
+<div id='pane'>
+	<div id='map'></div>
+	<div id='bg-photo'></div>
+</div>
+
+<main class="content">
+	<div class="left-band" style="position: fixed; top: 0px; left: 30px; width: 650px; height: 1000px; background-color: black; opacity:0.85; filter:alpha(opacity=85); /* For IE8 and earlier */"></div>
+	<div class="article-scroller" style="margin-left:60px; width: 590px;">
+	   <article class="post">
+			<header class="post-header">
+				<span class="blog-title">The Big Trip</span>
+			</header>
+			<section class="post-content">
+				<p>Here's some general stuff about the blog.  Broad-ranging observations, overarching thoughts, whatnot, and likewise. . .</p>
+			</section>	
+			<hr />
+		</article>
+		<article class="post">
+			<span class="post-meta"><time datetime="2014-04-20">20 Apr 2014</time> on <a href="/tag/getting-started/">Getting Started</a></span>
+			<h1 class="post-title">A blog post</h1>
+			<section class="post-content">
+				<p>Here's an intro paragraph.  It introduces something.  Like maybe a set of photos. . . </p>
+
+				<iframe id="photoset_iframe_83403724409" class="photoset" scrolling="no" frameborder="0" height="1250" width="100%"
+                style="border:0px; background-color:transparent; overflow:hidden;" src="http://mas222.tumblr.com/post/83403724409/photoset_iframe/mas222/tumblr_n4dqvaulMJ1tzxxnf/0/false"></iframe>
+
+				<h3 id="links">Links</h3>
+
+				<p>Want to link to a source? No problem. If you paste in url, like <a href='http://ghost.org'>http://ghost.org</a> - it'll automatically be linked up. But if you want to customise your anchor text, you can do that too! Here's a link to <a href="http://ghost.org">the Ghost website</a>. Neat.</p>
+
+				<h3 id="whataboutimages">Here's another image</h3>
+
+				<p>This is how an image will format with the default Ghost theme:</p>
+
+				<p><img src="https://ghost.org/images/ghost.png" alt="The Ghost Logo" /></p>
+			</section>
+			<footer class="post-footer">
+				<section class="author">
+					<h4>Michael Steffen</h4>
+					<p></p>
+					<ul class="author-meta clearfix"></ul>
+				</section>
+			</footer>
+		</article>
+		<article class="post">
+			<span class="post-meta"><time datetime="2014-04-20">20 Apr 2014</time> on <a href="/tag/getting-started/">Getting Started</a></span>
+			<h1 class="post-title">Another blog post</h1>
+			<section class="post-content">
+				<p>Sometimes a link isn't enough, you want to quote someone on what they've said. It was probably very wisdomous. Is wisdomous a word? Find out in a future release when we introduce spellcheck! For now - it's definitely a word.</p>
+
+				<blockquote>
+				  <p>Wisdomous - it's definitely a word.</p>
+				</blockquote>
+
+				<h3 id="workingwithcode">Working with Code</h3>
+
+				<p>Here's some inline <code>&lt;code&gt;</code>. Want to show off something more comprehensive? 4 spaces of indentation gets you there.</p>
+
+<pre><code>.awesome-thing {
+	display: block;
+	width: 100%;
+}
+</code></pre>
+
+				<h3 id="readyforabreak">Ready for a Break?</h3>
+
+				<p>Throw 3 or more dashes down on any new line and you've got yourself a fancy new divider. Aw yeah.</p>
+
+				<hr />
+
+				<h3 id="advancedusage">Advanced Usage</h3>
+
+				<p>There's one fantastic secret about Markdown. If you want, you can  write plain old HTML and it'll still work! Very flexible.</p>
+
+				<p>That should be enough to get you started. Have fun - and let us know what you think :)</p>
+			</section>
+			<footer class="post-footer">
+				<section class="author">
+					<h4>Michael Steffen</h4>
+					<p></p>
+					<ul class="author-meta clearfix"></ul>
+				</section>
+			</footer>
+		</article>
+	</div>
+</main>
+
+<script src="//the-big-trip.ghost.io/public/jquery.js?v=f589d0a8e2"></script>
+<script type="text/javascript" src="//the-big-trip.ghost.io/assets/js/jquery.fitvids.js?v=f589d0a8e2"></script>
+<script type="text/javascript" src="//the-big-trip.ghost.io/assets/js/index.js?v=f589d0a8e2"></script>
+
+<script>
+var map = L.mapbox.map('map', 'mas222.i1nib4id', {zoomControl: false, detectRetina: true})
+
+// disable drag and zoom handlers
+map.dragging.disable();
+map.touchZoom.disable();
+map.doubleClickZoom.disable();
+map.scrollWheelZoom.disable();
+
+// disable tap handler, if present.
+if (map.tap) map.tap.disable();
+
+// Array of post elements.
+var posts = document.getElementsByClassName('post');
+
+// Helper to set the active section.
+var setActive = function(index) {  
+  // The background fade causes scrolling to catch in Firefox.  Seeking a good solution.
+
+  if (document.body.className === 'post-template post-0' && index != 0) {
+  	$("#bg-photo").fadeOut("slow");
+  } else if (document.body.className != 'post-template post-0' && index === 0) {
+    $("#bg-photo").fadeIn("slow");
+  } 
+  
+  // Set a body class for the active section.
+  document.body.className = 'post-template post-' + index;
+  
+  return true;
+};
+
+// Bind to scroll events to find the active section.
+window.onscroll = _(function() {
+  // IE 8
+  if (window.pageYOffset === undefined) {
+    var y = document.documentElement.scrollTop;
+    var h = document.documentElement.clientHeight;
+  } else {
+    var y = window.pageYOffset;
+    var h = window.innerHeight;
+  }
+
+  // If scrolled to the very top of the page set the first section active.
+  if (y === 0) return setActive(0);
+
+  // Otherwise, conditionally determine the extent to which page must be
+  // scrolled for each section. The first section that matches the current
+  // scroll position wins and exits the loop early.
+  var memo = 0;
+  var buffer = (h * 0.3333);
+  var active = _(posts).any(function(el, index) {
+    memo += el.offsetHeight;
+    return y < (memo - buffer) ? setActive(index) : false;
+  });
+
+  // If no section was set active the user has scrolled past the last section.
+  // Set the last section active.
+  if (!active) setActive(posts.length - 1);
+  
+}).debounce(10);
+
+// Set map to first section.
+setActive(0);
+
+</script>
+
+</body>
+</html>
