@@ -13,6 +13,7 @@
         {/block:Description}
         
         {block:Hidden} 
+        <meta name="color:Post wrapper" content="#fff"/>
         <meta name="if:Sliding header" content="1"> 
         <meta name="if:Collapse navigation" content="1">
         <meta name="if:Endless scrolling" content="1">
@@ -52,6 +53,10 @@
             .search-header {
                 color: {TitleColor};
             }
+
+			.post-wrapper {
+   				 background: {color:Post wrapper};
+			}
 
             .h-line {
                 background: {TitleColor};
