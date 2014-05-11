@@ -56,6 +56,7 @@
 
 			.post-wrapper {
    				 background: {color:Post wrapper};
+   				 background-clip: padding-box;
 			}
 
             .h-line {
