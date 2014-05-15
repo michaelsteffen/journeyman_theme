@@ -22,9 +22,6 @@
         <meta name="select:Layout" content="regular" title="Regular">
         <meta name="select:Layout" content="narrow" title="Narrow">
         <meta name="select:Layout" content="grid" title="Grid">
-        
-        <meta name="select:Marker" content="date-marker" title="Date">
-        <meta name="select:Marker" content="pin-marker" title="Pin">
 
         <meta name="text:Disqus shortname" content="">
         <meta name="text:Google analytics ID" content="">
@@ -193,134 +190,31 @@
             
             /* Journeyman additions */
             
-            .marker-wrapper {
-            	position: absolute;
-            	z-index: 1;
-            }
-            
-            .marker-wrapper.marker-active  {
-            	z-index: 2;
-            }
-            
-            .marker-text {
-            	white-space: nowrap;
-            }
-            
-            .marker.pin-marker {
-                position: absolute;
-				width: 30px;
-				height: 30px;
-				border: #666 solid 1px;
-				border-radius: 50% 50% 50% 0;
-				background: #1087bf;
-				-webkit-transform: rotate(-45deg);
-   				-o-transform: rotate(-45deg);
-   				-ms-transform: rotate(-45deg);
-     			-moz-transform: rotate(-45deg);
-				transform: rotate(-45deg);
-				margin: -20px 0 0 -20px;
-			}
-			
-			.marker.pin-marker:before {
-				content: '';
-				position: absolute;
-				width: 12px;
-				height: 12px;
-				margin: 9px 0 0 9px;
-				background: #fff;
-				border-radius: 50%;
-			}
-			
-			.marker-active .marker.pin-marker {
-				background: #3ca0d3;
-				-webkit-transform: scale(1.2, 1.2) rotate(-45deg) translate(1px, -3px);
-   				-o-transform: scale(1.2, 1.2) rotate(-45deg) translate(1px, -3px);
-   				-ms-transform: scale(1.2, 1.2) rotate(-45deg) translate(1px, -3px);
-     			-moz-transform: scale(1.2, 1.2) rotate(-45deg) translate(1px, -3px);
-   				transform: scale(1.2, 1.2) rotate(-45deg) translate(1px, -3px);
+			.marker {
+			  min-width: 16px;
+			  height: 18px;
+			  border-radius: 10px 10px 10px 0px;
+			  margin:-8px 0px 0px -8px;
+			  padding:0px 4px 0px 4px;
+			  background-color: #1087bf;
+			  border: #3ca0d3 solid 2px;
+			  position: absolute;
+			  font-family: 'Open Sans', sans-serif;
+			  font-size: 11px;
+			  font-weight: 600;
+			  line-height: 18px;
+			  color: white;
+			  text-align: center;
+			  box-shadow: 1px 1px 3px #555;
 			} 
-			
-			.pin-marker .marker-text {
-				display:none;
-			}
-			
-			.marker-shadow.pin-marker {
-				content: "";
-				position: absolute;
-				background: #333;
-				opacity: .35;
-				border-radius: 50%;
-				height: 18px;
-				width: 18px;
-				margin: 8px 0px 0px -12px;
-				-webkit-transform: rotateX(55deg);
-				transform: rotateX(65deg);
-				z-index: -2;
-			}
-            
-            .marker.date-marker {
-            	position: absolute;
-				min-width: 16px;
-			 	height: 18px;
-				padding: 0px 4px 0px 4px;;
-				background: #1087bf;
-				-webkit-border-radius: 5px;
-				-moz-border-radius: 5px;
-				border-radius: 5px;
-				border: #3ca0d3 solid 2px;
-				z-index: 1;
-				font-family: 'Open Sans', sans-serif;
-				font-size: 11px;
-				font-weight: 600;
-				line-height: 18px;
-				color: white;
-				text-align: center;
-			}
 
-			.marker.date-marker:after {
-				content: '';
-				position: absolute;
-				border-style: solid;
-				border-width: 6px 6px 0;
-				border-color: #1087bf transparent;
-				display: block;
-				width: 0;
-				z-index: 1;
-				margin-left: -6px;
-				bottom: -6px;
-				left: 50%;
-			}
-
-			.marker.date-marker:before {
-				content: '';
-				position: absolute;
-				border-style: solid;
-				border-width: 7px 7px 0;
-				border-color: #3ca0d3 transparent;
-				display: block;
-				width: 0;
-				z-index: 0;
-				margin-left: -7px;
-				bottom: -9px;
-				left: 50%;
-			}
-            
-            .marker-active .marker.date-marker {
-				background: #3ca0d3;
-				border: #b7ddf3 solid 2px;
+			.marker-active {
+			  background-color: #3ca0d3;
+			  border: #b7ddf3 solid 2px;
+			  box-shadow: 2px 6px 5px #555;
+			  margin:-12px 0px 0px -8px;
+			  z-index: 10;
 			} 
-			
-			.marker-active .marker.date-marker:after {
-				border-color: #3ca0d3 transparent;
-			}
-			
-			.marker-active .marker.date-marker:before {
-				border-color: #b7ddf3 transparent;
-            }
-            
-            .marker-shadow.date-marker {
-				visibility: hidden;
-			}
 
 			#pane {
 			  position: fixed;
@@ -372,31 +266,66 @@
    			
    			#posts article {
    				opacity: 0;
-   				-webkit-transform: scale(.95, .95);
-   				-o-transform: scale(.95, .95);
-   				-ms-transform: scale(.95, .95);
-     			-moz-transform: scale(.95, .95);
-   				transform: scale(.95, .95);
-   				-webkit-transition: margin-bottom 0.2s, opacity .5s, -webkit-transform .5s;
-				-o-transition: margin-bottom 0.2s, opacity .5s, -o-transform .5s;
-				-ms-transition: margin-bottom 0.2s, opacity .5s, -ms-transform .5s; 
-				-moz-transition: margin-bottom 0.2s, opacity .5s, -moz-transform .5s; 
-				transition: margin-bottom 0.2s, opacity .5s, transform .5s; 
+			}
+  			
+  			@-webkit-keyframes enterUp {
+				0% {
+					opacity: 0;
+					-webkit-transform: translateY(100px);
+					transform: translateY(100px);
+			 	}
+				100% {
+					opacity: 1;
+					-webkit-transform: translateY(0);
+					transform: translateY(0);
+				}
+			}
+  			
+  			@keyframes enterUp {
+				0% {
+					opacity: 0;
+					-webkit-transform: translateY(100px);
+					-ms-transform: translateY(100px);
+					transform: translateY(100px);
+				}
+				100% {
+					opacity: 1;
+					-webkit-transform: translateY(0);
+					-ms-transform: translateY(0);
+					transform: translateY(0);
+				}
+			}
+
+  			@-webkit-keyframes exitUp {
+				0% { opacity: 1; }
+				100% { opacity: 0; }
+			}
+  			
+  			@keyframes exitUp {
+				0% { opacity: 1; }
+				100% { opacity: 0; }
+			}
+
+			#posts article.enterUp {
+				-webkit-animation-name: enterUp;
+				animation-name: enterUp;
+				-webkit-animation-duration: 750ms;
+				animation-duration: 750ms;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+				opacity: 1;
 			}
 			
-			#posts article.scrolling {
-   				opacity: .25;
+			#posts article.exitUp {
+				-webkit-animation-name: exitUp;
+				animation-name: exitUp;
+				-webkit-animation-duration: 750ms;
+				animation-duration: 750ms;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+				opacity: 0;
 			}
-			
-			#posts article.visible {
-   				opacity: 1;
-   				-webkit-transform: scale(1, 1);
-   				-o-transform: scale(1, 1);
-   				-ms-transform: scale(1, 1);
-     			-moz-transform: scale(1, 1);
-   				transform: scale(1, 1);
-			}
-  	
+
             /* Custom CSS */
             {CustomCSS}
         </style>
@@ -840,7 +769,7 @@
 		<script>
 		
 		// TODO:
-		// - add scroll effect for mobile using different event handlers
+		// - fix post transitions for scrolling down as well as up
 		// - sequence fade in and map move transitions
 		// - load map data from the post tags
 		// - figure out conflict between opacity and main .js file
@@ -849,7 +778,6 @@
 		// - set script not to run on mobile devices
 		// - map should only show once it has been fully loaded
 		// - integrate the onscroll event with the main javascript for the theme
-		// - make page degrade more elegantly when javascript is disabled (posts not invisible)
 
 		var geojson = [
 		  { "geometry": { "type": "Point", "coordinates": [84.334, 28.607] },
@@ -871,28 +799,10 @@
 		  // Define a new factory function. Takes geojson input and returns a
 		  // DOM element that represents the point.
 		  .factory(function(f) {
-		  	// setup the marker as two nested divs since Mapbox.js uses transforms
-		  	// to position the marker, but we also want to be able to use
-		  	// transforms (on the inner div) to style it.
-		  
-		  	// outer div to position the marker
-		  	var wrapper = document.createElement('div');
-			wrapper.className = 'marker-wrapper + marker-' + f.properties.id;
-		
-			// inner div for styling
-			// placing marker text in its own span allows it to be easily hidden
-			var marker = document.createElement('div');
-			marker.className = 'marker {select:Marker}';
-			marker.innerHTML = '<span class="marker-text" aria-hidden="true">' + f.properties.marker_text + '</span>' ;
-			wrapper.appendChild(marker);
-			
-			// inner div for shadow
-			// because . . . we can?
-			var marker_shadow = document.createElement('div');
-			marker_shadow.className = 'marker-shadow {select:Marker}';
-			wrapper.appendChild(marker_shadow);
-			
-			return wrapper;
+			var element = document.createElement('div');
+			element.className = 'marker marker-' + f.properties.id;
+			element.innerHTML = f.properties.marker_text;
+			return element;
 		  });
 
 		var map = mapbox.map('map', [main_layer, post_markers], null, []);
@@ -903,27 +813,19 @@
 
 		// Helper to set the active section.
 		var setActive = function(index) {  
+		  if (!map.ease.running()) { 
+			var ease_dest = { "lat": geojson[index].geometry.coordinates[1], "lon": geojson[index].geometry.coordinates[0] }
+			map.ease.location(ease_dest).zoom(9).optimal(.2, 1.00);
+		  }
   
-		  $(".marker-wrapper").removeClass("marker-active");
+		  $(".marker").removeClass("marker-active");
 		  $(".marker-" + geojson[index].properties.id).addClass("marker-active");
-
- 		  $(posts[index]).addClass("visible");
- 		  $(posts).slice(0,index).removeClass("visible");
- 		  $(posts).slice(index+1).removeClass("visible"); 	   
-		  $(posts).addClass("scrolling");
-
-  		  // TODO: Should change this to store function in a variable instead of in the DOM
-  		  // TODO: Probably should not be in this fn, since it isn't about setting active post
-  		  // TODO: Probably should move scrollTimer function to a permanent function to avoid recreating each time
-  		  // TODO: When an ease is done, need to check if we're still at the right place, and if not, start a new ease
-		  clearTimeout($.data(this, 'scrollTimer'));
-		  $.data(this, 'scrollTimer', setTimeout(function() {
-		    $(posts).removeClass("scrolling");
-		    if (!map.ease.running()) { 
-				var ease_dest = { "lat": geojson[index].geometry.coordinates[1], "lon": geojson[index].geometry.coordinates[0] }
-				map.ease.location(ease_dest).zoom(9).optimal(.2, 1.00);
-		  	}
-		  }, 250));
+		  
+		  $(posts[index]).addClass("enterUp");
+		  $(posts[index-1]).removeClass("enterUp").addClass("exitUp");
+		  
+		  /* .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+		  	$(this).addClass("map-active").removeClass("fadeInUp"); }); */
 
  		  return true;
 		};
@@ -946,7 +848,7 @@
 		  // scrolled for each section. The first section that matches the current
 		  // scroll position wins and exits the loop early.
 		  var cumulative_post_height = 60; //the height of the top of the first post at the top of the scroll
-		  var margin = (h * 0.4);
+		  var margin = (h * 0.3);
 		  var active = _(posts).any(function(el, index) {
 			// (y + margin) is the pixel offset, from the top of the page, that is 1/3 of the way down the window
 			// Add the height of each post, until we find the first post whose bottom has not yet cleared this point
@@ -958,17 +860,8 @@
 		  // If no section was set active the user has scrolled past the last section.
 		  // Set the last section active.
 		  if (!active) setActive(posts.length - 1);
-		  
+  
 		}).debounce(10);
-
-		/* 
-		// Also bind to touch events to do the scrolling animation
-		// TODO: Need to remove the fade in on mobile so that the inactive posts appear immediately
-		// TODO: Need to eliminate the onscroll events on mobile so we don't flickr
-		window.addEventListener('touchstart', function() { $(posts).addClass("scrolling"); } );
-		window.addEventListener('touchend', function() { $(posts).removeClass("scrolling"); } );
-		window.addEventListener('touchleave', function() { $(posts).removeClass("scrolling"); } );
-		*/
 
 		// Set map to first section.
 		setActive(0);
