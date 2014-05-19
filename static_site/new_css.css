@@ -14,52 +14,52 @@ body {
 }
 
 .marker {
-  min-width: 16px;
-  height: 18px;
-  border-radius: 10px 10px 10px 0px;
-  margin:-8px 0px 0px -8px;
-  padding:0px 4px 0px 4px;
-  background-color: #1087bf;
-  border: #3ca0d3 solid 2px;
-  position: absolute;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 1.0rem;
-  font-weight: 600;
-  line-height: 18px;
-  color: white;
-  text-align: center;
-  box-shadow: 1px 1px 3px #555;
+	min-width: 16px;
+	height: 18px;
+	border-radius: 10px 10px 10px 0px;
+	margin:-8px 0px 0px -8px;
+	padding:0px 4px 0px 4px;
+	background-color: #1087bf;
+	border: #3ca0d3 solid 2px;
+	position: absolute;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.0rem;
+	font-weight: 600;
+	line-height: 18px;
+	color: white;
+	text-align: center;
+	box-shadow: 1px 1px 3px #555;
 } 
 
 .marker-active {
-  background-color: #3ca0d3;
-  border: #b7ddf3 solid 2px;
-  box-shadow: 2px 6px 5px #555;
-  margin:-12px 0px 0px -8px;
+	background-color: #3ca0d3;
+	border: #b7ddf3 solid 2px;
+	box-shadow: 2px 6px 5px #555;
+	margin:-12px 0px 0px -8px;
 } 
 
 #pane {
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  right: 0px;
-  width: 100%;
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+	width: 100%;
 }
 
 #map  {
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  width: 150%;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	width: 150%;
 }
 
 #bg-photo  {
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  width: 100%;
-  background: transparent url('big_bg.jpg') center center no-repeat;
-  background-size: cover;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+	background: transparent url('big_bg.jpg') center center no-repeat;
+	background-size: cover;
 }

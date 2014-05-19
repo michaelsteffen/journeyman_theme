@@ -366,6 +366,7 @@
 				left: 0;
 				bottom: 0;
 				right: 0;
+				border-radius: 6px;
 				position: absolute;
 				z-index: -1;
    			} 
@@ -401,6 +402,7 @@
             {CustomCSS}
         </style>
     </head>
+    
     <body data-urlencoded-name="{URLEncodedName}" class="{select:Layout}{block:IndexPage} index-page{/block:IndexPage}{block:PermalinkPage} permalink{/block:PermalinkPage}{block:SearchPage} search-page{block:NoSearchResults} no-results{/block:NoSearchResults}{/block:SearchPage}{block:HideHeaderImage} no-header-image{/block:HideHeaderImage}{block:NoStretchHeaderImage} contain-header-image{/block:NoStretchHeaderImage}">
         <section id="page">
         
@@ -569,7 +571,7 @@
                                                     {LinkOpenTag}<img src="{PhotoURL-HighRes}" alt="{PhotoAlt}" width="{PhotoWidth-HighRes}" height="{PhotoHeight-HighRes}">{LinkCloseTag}
                                                 </div>
                                             </div>
-                                            {block:Caption}
+											{block:Caption}
                                             <figcaption class="caption">
                                                 {Caption}
                                             </figcaption>
@@ -579,12 +581,12 @@
 
                                         {block:Photoset}
                                         <figure class="photoset {block:Caption}with-caption{/block:Caption}">
-                                            {Photoset}
                                             {block:Caption}
                                             <figcaption class="caption">
                                                 {Caption}
                                             </figcaption>
                                             {/block:Caption}
+                                            {Photoset}
                                         </figure>
                                         {/block:Photoset}
 
@@ -768,6 +770,7 @@
                                         </footer>
                                     </section>
                                     {/block:Date}
+                                    
                                     {block:PermalinkPage}
 
                                         {block:PostNotes}
@@ -866,34 +869,33 @@
 
 		var main_layer = mapbox.layer().id('mas222.i1nib4id');
 		var post_markers = mapbox.markers.layer()
-		  // Load up markers from geojson data.
-		  .features(geojson)
-		  // Define a new factory function. Takes geojson input and returns a
-		  // DOM element that represents the point.
-		  .factory(function(f) {
-		  	// setup the marker as two nested divs since Mapbox.js uses transforms
-		  	// to position the marker, but we also want to be able to use
-		  	// transforms (on the inner div) to style it.
+			// Load up markers from geojson data.
+			.features(geojson)
+			// Define a new factory function. Takes geojson input and returns a
+			// DOM element that represents the point.
+			.factory(function(f) {
+				// setup the marker as two nested divs since Mapbox.js uses transforms
+				// to position the marker, but we also want to be able to use
+				// transforms (on the inner div) to style it.
 		  
-		  	// outer div to position the marker
-		  	var wrapper = document.createElement('div');
-			wrapper.className = 'marker-wrapper + marker-' + f.properties.id;
+				// outer div to position the marker
+				var wrapper = document.createElement('div');
+				wrapper.className = 'marker-wrapper + marker-' + f.properties.id;
 		
-			// inner div for styling
-			// placing marker text in its own span allows it to be easily hidden
-			var marker = document.createElement('div');
-			marker.className = 'marker {select:Marker}';
-			marker.innerHTML = '<span class="marker-text" aria-hidden="true">' + f.properties.marker_text + '</span>' ;
-			wrapper.appendChild(marker);
+				// inner div for styling
+				// placing marker text in its own span allows it to be easily hidden
+				var marker = document.createElement('div');
+				marker.className = 'marker {select:Marker}';
+				marker.innerHTML = '<span class="marker-text" aria-hidden="true">' + f.properties.marker_text + '</span>' ;
+				wrapper.appendChild(marker);
 			
-			// inner div for shadow
-			// because . . . we can?
-			var marker_shadow = document.createElement('div');
-			marker_shadow.className = 'marker-shadow {select:Marker}';
-			wrapper.appendChild(marker_shadow);
+				// inner div for shadow
+				var marker_shadow = document.createElement('div');
+				marker_shadow.className = 'marker-shadow {select:Marker}';
+				wrapper.appendChild(marker_shadow);
 			
-			return wrapper;
-		  });
+				return wrapper;
+		  	});
 
 		var map = mapbox.map('map', [main_layer, post_markers], null, []);
 		map.centerzoom({ lat: 28.607, lon: 84.334 }, 9);
@@ -903,29 +905,28 @@
 
 		// Helper to set the active section.
 		var setActive = function(index) {  
-  
-		  $(".marker-wrapper").removeClass("marker-active");
-		  $(".marker-" + geojson[index].properties.id).addClass("marker-active");
+			$(".marker-wrapper").removeClass("marker-active");
+			$(".marker-" + geojson[index].properties.id).addClass("marker-active");
 
- 		  $(posts[index]).addClass("visible");
- 		  $(posts).slice(0,index).removeClass("visible");
- 		  $(posts).slice(index+1).removeClass("visible"); 	   
-		  $(posts).addClass("scrolling");
+ 			$(posts[index]).addClass("visible");
+ 			$(posts).slice(0,index).removeClass("visible");
+ 			$(posts).slice(index+1).removeClass("visible"); 	   
+			$(posts).addClass("scrolling");
 
-  		  // TODO: Should change this to store function in a variable instead of in the DOM
-  		  // TODO: Probably should not be in this fn, since it isn't about setting active post
-  		  // TODO: Probably should move scrollTimer function to a permanent function to avoid recreating each time
-  		  // TODO: When an ease is done, need to check if we're still at the right place, and if not, start a new ease
-		  clearTimeout($.data(this, 'scrollTimer'));
-		  $.data(this, 'scrollTimer', setTimeout(function() {
-		    $(posts).removeClass("scrolling");
-		    if (!map.ease.running()) { 
-				var ease_dest = { "lat": geojson[index].geometry.coordinates[1], "lon": geojson[index].geometry.coordinates[0] }
-				map.ease.location(ease_dest).zoom(9).optimal(.2, 1.00);
-		  	}
-		  }, 250));
+  			// TODO: Should change this to store function in a variable instead of in the DOM
+  			// TODO: Probably should not be in this fn, since it isn't about setting active post
+  			// TODO: Probably should move scrollTimer function to a permanent function to avoid recreating each time
+  			// TODO: When an ease is done, need to check if we're still at the right place, and if not, start a new ease
+			clearTimeout($.data(this, 'scrollTimer'));
+			$.data(this, 'scrollTimer', setTimeout(function() {
+				$(posts).removeClass("scrolling");
+		    	if (!map.ease.running()) { 
+					var ease_dest = { "lat": geojson[index].geometry.coordinates[1], "lon": geojson[index].geometry.coordinates[0] }
+					map.ease.location(ease_dest).zoom(9).optimal(.2, 1.00);
+		  		}
+			}, 250));
 
- 		  return true;
+ 			return true;
 		};
 
 		// Bind to scroll events to find the active section.

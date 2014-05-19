@@ -99,92 +99,7 @@ function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function browserResize() {
-	var screen = Modernizr.mq('only screen and (max-width: 940px)');
-	var mobile = Modernizr.mq('only screen and (max-width: 520px)');
-	var permaLinkDiv = $('.permSection').length;
-	if(permaLinkDiv > 0) {
-		if(screen) {
-			$('.meta').insertBefore('.permSection');
-		} else {
-			$('.meta').appendTo('.post');
-		}
-	}	
-	if (mobile) {
-		decreaseVideoSize();
-	} else {
-		increaseVideoSize();
-	}
-};
 
-
-function decreaseVideoSize() {
-    var columnWidth = 300; // width of your content column - any
-
-    $(".post.video").each(function() {
-
-        var currHeight;
-        var newHeight;
-        
-        var iframeHTML = $(this).find('.vidHolder').html();
-        
-        var iframe = $("iframe", this);
-        
-        if(iframeHTML.indexOf("tumblr_video_container") > 0) {
-
-	        
-	        if(iframe.length>0) {
-	            currHeight = iframe.height();
-	            newHeight = columnWidth * 9/16;
-	            iframe.height(newHeight).width(columnWidth);
-	           $(this).find(".tumblr_video_container").css('height',newHeight);
-	        } else {
-	            var object = $("object", this);
-	            var embed = $("embed", object);
-	            currHeight = object.attr('height');
-	            newHeight = columnWidth *  9/16;
-	            object.width(columnWidth).attr('height', newHeight);
-	            embed.width(columnWidth).attr('height', newHeight);
-	        }
-
-        }
-        
-    });
-}
-
-function increaseVideoSize() {
-    var columnWidth = 500; // width of your content column - any
-
-    $(".post.video").each(function() {
-
-        var currHeight;
-        var newHeight;
-        
-        var iframeHTML = $(this).find('.vidHolder').html();
-        
-        var iframe = $("iframe", this);
-        
-        if(iframeHTML.indexOf("tumblr_video_container") > 0) {
-
-	        
-	        if(iframe.length>0) {
-	            currHeight = iframe.height();
-	            newHeight = columnWidth * 9/16;
-	            iframe.height(newHeight).width(columnWidth);
-	           $(this).find(".tumblr_video_container").css('height',newHeight);
-	        } else {
-	            var object = $("object", this);
-	            var embed = $("embed", object);
-	            currHeight = object.attr('height');
-	            newHeight = columnWidth *  9/16;
-	            object.width(columnWidth).attr('height', newHeight);
-	            embed.width(columnWidth).attr('height', newHeight);
-	        }
-
-        }
-        
-    });
-}
 
 $(function() {
 	var themeCredit = '<span class="themeCredit"><a href="http://www.traveloguetheme.tumblr.com" target="_blank">Travelogue Theme</a> by <a href="http://www.girafficthemes.com" target="_blank">Giraffic</a></span>';
@@ -253,17 +168,17 @@ $(function() {
 	});
 	
 	$('a.highRes').fancybox({ 
-				type: "image",
-				titleShow: false,
-				padding: 0,
-				margin: 25,
-				overlayColor: $("body").css("background-color"),
-				overlayOpacity: 0.75,
-				hideOnContentClick: true
+		type: "image",
+		titleShow: false,
+		padding: 0,
+		margin: 25,
+		overlayColor: $("body").css("background-color"),
+		overlayOpacity: 0.75,
+		hideOnContentClick: true
 	});
 	
 	$('a.highRes').hover(function() {
-				$(this).find(".zoomBtn").toggleClass("hover");
+		$(this).find(".zoomBtn").toggleClass("hover");
 	});
 	
 	$('.post').each(function() {

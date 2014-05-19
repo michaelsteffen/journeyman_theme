@@ -331,13 +331,13 @@ body.is-scrolling {
     pointer-events: none;
 }
 
-body.is-scrolling #posts * {
+/* body.is-scrolling #posts * {
     -webkit-transition: none !important;
     -o-transition: none !important;
     -ms-transition: none !important;
     -moz-transition: none !important;
     transition: none !important;
-}
+} */
 
 /** Variations on header **/
 #header {
@@ -1705,7 +1705,7 @@ figure:not(.high-res) .photo-wrapper img[src$='.gif'] {
 }
 
 .photoset .caption {
-    margin: 20px 10px 10px;
+    margin: 10px 10px 20px;
 }
 
 .photoset .attribution-tags {
@@ -2478,7 +2478,7 @@ body.android-lt-4-4 {
     }
     
     .photoset .caption {
-        margin: 15px 19px 10px;
+        margin: 10px 19px 15px;
     }
 
     .photoset .attribution-tags {
