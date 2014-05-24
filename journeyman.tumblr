@@ -218,7 +218,7 @@
    				-ms-transform: rotate(-45deg);
      			-moz-transform: rotate(-45deg);
 				transform: rotate(-45deg);
-				margin: -20px 0 0 -20px;
+				margin: -42px 0 0 -21px;
 			}
 			
 			.marker.pin-marker:before {
@@ -252,7 +252,7 @@
 				border-radius: 50%;
 				height: 18px;
 				width: 18px;
-				margin: 8px 0px 0px -12px;
+				margin: -12px 0px 0px -15px;
 				-webkit-transform: rotateX(55deg);
 				transform: rotateX(65deg);
 				z-index: -2;
@@ -834,7 +834,7 @@
         <script>!window.jQuery && document.write(unescape('%3Cscript src="http://static.tumblr.com/vr9xgox/sBgmmjhyw/jquery-1.9.1.min.js"%3E%3C/script%3E'));</script>
         <script src="http://static.tumblr.com/vr9xgox/Azhmnml1q/jquery.masonry.min.js"></script>
         <!-- something in the main journeyman js file breaks the opacity transition -->
-        <!-- <script src="https://dl.dropboxusercontent.com/u/96125344/journeyman.js"></script> -->
+        <script src="https://dl.dropboxusercontent.com/u/96125344/journeyman.js"></script>
 
 		<script src='https://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
 		<link rel='stylesheet' href='https://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css'  />
@@ -843,29 +843,96 @@
 		<script>
 		
 		// TODO:
-		// - add scroll effect for mobile using different event handlers
-		// - sequence fade in and map move transitions
-		// - load map data from the post tags
-		// - figure out conflict between opacity and main .js file
+		// - reintegrate main journeyman.js
+		//		- eliminate parallaxor
+		//		- figure out odd function structure??
+		//		- why do posts disappear after the drawer is activated
+		//		- make new markers appear with new posts
+		//		- last post doesn't end the blog
+		// - add option to hide location tags
+		// - add date to posts
+		// - trigger ease on previous ease end
+		// - fix map width for large screens
 		// - eliminate dependency on underscore.js
 		// - eliminate cruft from grid layout and remove option
-		// - set script not to run on mobile devices
+		// - write content for shutdown trip
+		// - 0.5!! (share with Mike & Eric & Dad & Matthew)
+		
+		// - Marker cleanup:
+		//		- add mapbox marker option??
+		//		- replace css pin ??
+		// 		- implement date handling for marker text
+		// 		- fix positioning of date markers
+		// 		- add circle marker (solid circle with black translucent border looks good)
+		// 		- add optional pulse effect for active marker
+		// 		- [fix shadow overlap]
+		// - Mobile optimization: 
+		// 		- add scroll effect for tablet using different event handlers
+		// 		- set map not to display on mobile
+		// 		- test on mobile
 		// - map should only show once it has been fully loaded
 		// - integrate the onscroll event with the main javascript for the theme
 		// - make page degrade more elegantly when javascript is disabled (posts not invisible)
+		// - 1.0!!
 
-		var geojson = [
-		  { "geometry": { "type": "Point", "coordinates": [84.334, 28.607] },
-			"properties": { "id": "intro", "marker_text": "Today" } },
-		  { "geometry": { "type": "Point", "coordinates": [84.334, 28.607] },
-			"properties": { "id": "manaslu_3", "marker_text": "Yesterday"  } },
-		  { "geometry": { "type": "Point", "coordinates": [84.5, 28.621] },
-			"properties": { "id": "manaslu_2", "marker_text": "Yesterday"  } },
-		  { "geometry": { "type": "Point", "coordinates": [84.653, 28.519] },
-			"properties": { "id": "manaslu_1", "marker_text": "Apr 15" } },
-		  { "geometry": { "type": "Point", "coordinates": [84.865, 27.699] },
-			"properties": { "id": "kathmandu", "marker_text": "Mar 23" } }
-		];
+		var geojson = []
+		var markers = [];
+		
+		function isNumber(n) {
+			return !isNaN(parseFloat(n)) && isFinite(n);
+		}
+		
+		$('.post').each(function() {
+			var placeToMap = false;	
+			var postID;
+			var coordinates = [];
+			var zoomLevel = 4;	
+			// var mapRelatedTags = 0;
+	
+			$(this).find('a.tag').each( function(i,item) {
+				var tagString = $(this).html();
+				var googleCoordinates = [];
+				
+				if (tagString.indexOf("place ") >= 0){
+					placeToMap = true;
+					postID = $(this).parents('article').attr('data-post-id');
+					googleCoordinates = tagString.replace('place ','').split(/[\s]+/);
+					coordinates[0] = googleCoordinates[1];
+					coordinates[1] = googleCoordinates[0];
+					// $(this).remove();
+					// mapRelatedTags++;
+				}
+		
+				if (tagString.indexOf("zoom ") >= 0) {
+					var zoomValue = tagString.replace('zoom ','');
+					var isZoomNumber = isNumber(zoomValue);
+					if(isZoomNumber) {
+						zoomLevel = parseInt(zoomValue);					
+					}				
+					// $(this).remove();				
+					// mapRelatedTags++;			
+				}	
+			} );
+	
+			// if the place & zoom tags are all the tags, remove the whole list
+			/* if(mapRelatedTags === noOfTags){
+				$(this).find('li.tags').remove();
+			} */
+	
+			if(placeToMap) {
+				// setup two data structures:
+				// one to easily go from the geometry to the post
+				// and the other to easily go from the post to the geometry
+				// TODO: get post date in case we are using the date markers
+				geojson.push( { 'geometry': { 'type': 'Point', 'coordinates': coordinates },
+								'properties': { 'postID': postID, 'markerText': 'NYI"' } } );
+				markers[postID] = {
+					"geojsonIndex": geojson.length, 
+					"coordinates": coordinates, 
+					"zoom": zoomLevel, 
+					"date": "NYI" };
+			}
+		});
 
 		var main_layer = mapbox.layer().id('mas222.i1nib4id');
 		var post_markers = mapbox.markers.layer()
@@ -880,33 +947,35 @@
 		  
 				// outer div to position the marker
 				var wrapper = document.createElement('div');
-				wrapper.className = 'marker-wrapper + marker-' + f.properties.id;
+				wrapper.className = 'marker-wrapper + marker-' + f.properties.postID;
 		
 				// inner div for styling
 				// placing marker text in its own span allows it to be easily hidden
 				var marker = document.createElement('div');
 				marker.className = 'marker {select:Marker}';
-				marker.innerHTML = '<span class="marker-text" aria-hidden="true">' + f.properties.marker_text + '</span>' ;
+				marker.innerHTML = '<span class="marker-text" aria-hidden="true">' + f.properties.markerText + '</span>' ;
 				wrapper.appendChild(marker);
 			
 				// inner div for shadow
-				var marker_shadow = document.createElement('div');
-				marker_shadow.className = 'marker-shadow {select:Marker}';
-				wrapper.appendChild(marker_shadow);
+				var markerShadow = document.createElement('div');
+				markerShadow.className = 'marker-shadow {select:Marker}';
+				wrapper.appendChild(markerShadow);
 			
 				return wrapper;
 		  	});
 
 		var map = mapbox.map('map', [main_layer, post_markers], null, []);
-		map.centerzoom({ lat: 28.607, lon: 84.334 }, 9);
+		map.centerzoom({ lat: 0, lon: 0 }, 2);
 
 		// Array of post elements.
 		var posts = document.getElementsByTagName("article");
 
 		// Helper to set the active section.
-		var setActive = function(index) {  
+		var setActive = function(index, ease) {
+			postID = $(posts[index]).attr('data-post-id');
+			
 			$(".marker-wrapper").removeClass("marker-active");
-			$(".marker-" + geojson[index].properties.id).addClass("marker-active");
+			$(".marker-" + postID).addClass("marker-active");
 
  			$(posts[index]).addClass("visible");
  			$(posts).slice(0,index).removeClass("visible");
@@ -920,10 +989,14 @@
 			clearTimeout($.data(this, 'scrollTimer'));
 			$.data(this, 'scrollTimer', setTimeout(function() {
 				$(posts).removeClass("scrolling");
-		    	if (!map.ease.running()) { 
-					var ease_dest = { "lat": geojson[index].geometry.coordinates[1], "lon": geojson[index].geometry.coordinates[0] }
-					map.ease.location(ease_dest).zoom(9).optimal(.2, 1.00);
-		  		}
+		    	if (!map.ease.running() && markers[postID]) { 
+		    		var dest = { "lat": markers[postID].coordinates[1], "lon": markers[postID].coordinates[0] };
+		    		if (ease) {
+						map.ease.location(dest).zoom(markers[postID].zoom).optimal(.6);
+		  			} else {
+						map.centerzoom(dest, markers[postID].zoom);
+					}
+				}
 			}, 250));
 
  			return true;
@@ -931,35 +1004,34 @@
 
 		// Bind to scroll events to find the active section.
 		window.onscroll = _(function() {
-		  // IE 8
-		  if (window.pageYOffset === undefined) {
-			var y = document.documentElement.scrollTop;
-			var h = document.documentElement.clientHeight;
-		  } else {
-			var y = window.pageYOffset;
-			var h = window.innerHeight;
-		  }
+			// IE 8
+			if (window.pageYOffset === undefined) {
+				var y = document.documentElement.scrollTop;
+				var h = document.documentElement.clientHeight;
+			} else {
+				var y = window.pageYOffset;
+				var h = window.innerHeight;
+			}
 
-		  // If scrolled to the very top of the page set the first section active.
-		  if (y === 0) return setActive(0);
+			// If scrolled to the very top of the page set the first section active.
+			if (y === 0) return setActive(0, true);
 
-		  // Otherwise, conditionally determine the extent to which page must be
-		  // scrolled for each section. The first section that matches the current
-		  // scroll position wins and exits the loop early.
-		  var cumulative_post_height = 60; //the height of the top of the first post at the top of the scroll
-		  var margin = (h * 0.4);
-		  var active = _(posts).any(function(el, index) {
-			// (y + margin) is the pixel offset, from the top of the page, that is 1/3 of the way down the window
-			// Add the height of each post, until we find the first post whose bottom has not yet cleared this point
-			// This is the active post
-			cumulative_post_height += $(el).outerHeight(true);
-			return (cumulative_post_height > (y + margin))  ? setActive(index) : false;
-		  });
+			// Otherwise, conditionally determine the extent to which page must be
+			// scrolled for each section. The first section that matches the current
+			// scroll position wins and exits the loop early.
+			var cumulative_post_height = 60; //the height of the top of the first post at the top of the scroll
+			var margin = (h * 0.4);
+			var active = _(posts).any(function(el, index) {
+				// (y + margin) is the pixel offset, from the top of the page, that is 1/3 of the way down the window
+				// Add the height of each post, until we find the first post whose bottom has not yet cleared this point
+				// This is the active post
+				cumulative_post_height += $(el).outerHeight(true);
+				return (cumulative_post_height > (y + margin))  ? setActive(index, true) : false;
+			});
 
-		  // If no section was set active the user has scrolled past the last section.
-		  // Set the last section active.
-		  if (!active) setActive(posts.length - 1);
-		  
+			// If no section was set active the user has scrolled past the last section.
+			// Set the last section active.
+			if (!active) setActive(posts.length - 1, true);
 		}).debounce(10);
 
 		/* 
@@ -972,7 +1044,7 @@
 		*/
 
 		// Set map to first section.
-		setActive(0);
+		setActive(0, false);
 
 		</script>
 
