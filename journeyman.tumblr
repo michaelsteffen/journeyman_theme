@@ -15,17 +15,17 @@
         {block:Hidden} 
         <meta name="color:Post background" content="#fff"/>
         <meta name="if:Translucent posts" content="1">
-        <meta name="if:Sliding header" content="1"> 
         <meta name="if:Collapse navigation" content="1">
         <meta name="if:Endless scrolling" content="1">
+        <meta name="if:Hide mapping tags" content="1">
 
         <meta name="select:Layout" content="regular" title="Regular">
         <meta name="select:Layout" content="narrow" title="Narrow">
-        <meta name="select:Layout" content="grid" title="Grid">
         
         <meta name="select:Marker" content="date-marker" title="Date">
         <meta name="select:Marker" content="pin-marker" title="Pin">
 
+        <meta name="text:Mapbox map" content="">
         <meta name="text:Disqus shortname" content="">
         <meta name="text:Google analytics ID" content="">
         {/block:Hidden}
@@ -335,7 +335,7 @@
 			  top: 0px;
 			  bottom: 0px;
 			  left: 0px;
-			  width: 150%;
+			  right: -722px;
 			}
 
 			#bg-photo  {
@@ -389,7 +389,7 @@
    				opacity: .25;
 			}
 			
-			#posts article.visible {
+			#posts article.post-active {
    				opacity: 1;
    				-webkit-transform: scale(1, 1);
    				-o-transform: scale(1, 1);
@@ -397,6 +397,34 @@
      			-moz-transform: scale(1, 1);
    				transform: scale(1, 1);
 			}
+			
+			#posts article.post-active {
+   				opacity: 1;
+   				-webkit-transform: scale(1, 1);
+   				-o-transform: scale(1, 1);
+   				-ms-transform: scale(1, 1);
+     			-moz-transform: scale(1, 1);
+   				transform: scale(1, 1);
+			}
+			
+			.avatar-wrapper, 
+			.title-group {
+			   	-webkit-transition: opacity .5s, -webkit-transform .5s;
+				-o-transition: opacity .5s, -o-transform .5s;
+				-ms-transition: opacity .5s, -ms-transform .5s; 
+				-moz-transition: opacity .5s, -moz-transform .5s; 
+				transition: opacity .5s, transform .5s; 
+			}
+			
+			.avatar-wrapper.inactive, 
+			.title-group.inactive {
+			   	-webkit-transform: scale(.95, .95);
+   				-o-transform: scale(.95, .95);
+   				-ms-transform: scale(.95, .95);
+     			-moz-transform: scale(.95, .95);
+   				transform: scale(.95, .95);
+   				opacity: 0;
+   			}
   	
             /* Custom CSS */
             {CustomCSS}
@@ -404,13 +432,12 @@
     </head>
     
     <body data-urlencoded-name="{URLEncodedName}" class="{select:Layout}{block:IndexPage} index-page{/block:IndexPage}{block:PermalinkPage} permalink{/block:PermalinkPage}{block:SearchPage} search-page{block:NoSearchResults} no-results{/block:NoSearchResults}{/block:SearchPage}{block:HideHeaderImage} no-header-image{/block:HideHeaderImage}{block:NoStretchHeaderImage} contain-header-image{/block:NoStretchHeaderImage}">
-        <section id="page">
-        
-			<div id='pane'>
-				<div id='map'></div>
-				<!-- <div id='bg-photo'></div> -->
-			</div>
-        
+		<div id='pane'>
+			<div id='map'></div>
+			<!-- <div id='bg-photo'></div> -->
+		</div>
+
+        <section id="page">        
             <div class="nav-menu-wrapper {block:IfNotCollapseNavigation}search-only{/block:IfNotCollapseNavigation}">
                 <nav class="nav-menu pop">
                     <a class="selector">
@@ -472,20 +499,9 @@
                 {block:ShowAvatar}avatar-style-{AvatarShape}{/block:ShowAvatar}">
 
                 <header id="header">
-                    {block:ShowHeaderImage}
-                    <div class="header-image-wrapper {block:NoStretchHeaderImage}contain{/block:NoStretchHeaderImage}">
-                        <a href="/" class="header-image {block:IfSlidingHeader}parallax{/block:IfSlidingHeader} {block:StretchHeaderImage}cover{/block:StretchHeaderImage} {block:NoStretchHeaderImage}contain{/block:NoStretchHeaderImage}" data-bg-image="{HeaderImage}">
-                            {block:NoStretchHeaderImage}
-                            <img src="{HeaderImage}" alt="">
-                            {/block:NoStretchHeaderImage}
-                        </a>
-                        <div class="loader-bg"></div>
-                    </div>
-                    {/block:ShowHeaderImage}
-                
                     <div class="blog-title content">
                         <figure class="avatar-wrapper{block:IndexPage} animate{/block:IndexPage}">
-                            <a href="/" style="background-image: url({PortraitURL-128})" class="user-avatar"><img src="{PortraitURL-128}" alt="" class="print-only invisible"></a>
+                            <a href="/" style="background-image: url({PortraitURL-128})" class="user-avatar"><img src="{PortraitURL-128}" alt="" class="print-only inpost-active"></a>
                         </figure>
 
                         <div class="title-group{block:IndexPage} animate{/block:IndexPage}">
@@ -829,35 +845,40 @@
             Optica.ACCENT_COLOR = "{AccentColor}";
             Optica.BACKGROUND_COLOR = "{BackgroundColor}";
             Optica.ENDLESS_NOTES_SCROLLING = {block:IfDisqusShortname}false{/block:IfDisqusShortname}{block:IfNotDisqusShortname}true{/block:IfNotDisqusShortname};
+            Optica.HIDE_MAP_TAGS = {block:IfHideMappingTags}true{/block:IfHideMappingTags}{block:IfNotHideMappingTags}false{/block:IfNotHideMappingTags};
         </script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script>!window.jQuery && document.write(unescape('%3Cscript src="http://static.tumblr.com/vr9xgox/sBgmmjhyw/jquery-1.9.1.min.js"%3E%3C/script%3E'));</script>
         <script src="http://static.tumblr.com/vr9xgox/Azhmnml1q/jquery.masonry.min.js"></script>
-        <!-- something in the main journeyman js file breaks the opacity transition -->
-        <script src="https://dl.dropboxusercontent.com/u/96125344/journeyman.js"></script>
 
 		<script src='https://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
 		<link rel='stylesheet' href='https://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css'  />
 		<script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js'></script>
 
 		<script>
+		// New Journeyman Script
+		// =====================
 		
 		// TODO:
-		// - reintegrate main journeyman.js
-		//		- eliminate parallaxor
-		//		- figure out odd function structure??
-		//		- why do posts disappear after the drawer is activated
-		//		- make new markers appear with new posts
-		//		- last post doesn't end the blog
-		// - add option to hide location tags
-		// - add date to posts
-		// - trigger ease on previous ease end
-		// - fix map width for large screens
-		// - eliminate dependency on underscore.js
-		// - eliminate cruft from grid layout and remove option
-		// - write content for shutdown trip
-		// - 0.5!! (share with Mike & Eric & Dad & Matthew)
+		// - trigger ease on previous ease end and/or restart ease when destination changes
+		//   (will require a global variable with the last ease destination, since easey doesn't have a .to() getter 
+		// **0.5!! (share with Mike & Eric & Dad & Matthew)
 		
+		// - fix positioning for inactive long posts (now too far down b/c scaling is even  middle)
+		// - fix bug -- controls should appear next to tags
+		// - reset last post bottom margin on window resize
+		// - inactivate clicks on hidden posts
+		// - refactor handling of full post list
+		// - add menu selection to reverse order
+		// - add down arrow to first post?
+		// - Make menu stick 
+		// - add date to posts / fix date in drawer
+		// - outline title text?
+		// - Fix map width for narrow layout
+		// - Narrower top drawer margin?
+		// - Add option for title & description background
+		// - Make description option work
+		// - Allow custom background map
 		// - Marker cleanup:
 		//		- add mapbox marker option??
 		//		- replace css pin ??
@@ -866,82 +887,140 @@
 		// 		- add circle marker (solid circle with black translucent border looks good)
 		// 		- add optional pulse effect for active marker
 		// 		- [fix shadow overlap]
+		//		- possible to fix the issue where a marker becomes inactive then active again on new page?
+		//		  (try adding one by one instead of bulk add?)
+		//		  (or call setactive immediately after calling add?)
 		// - Mobile optimization: 
 		// 		- add scroll effect for tablet using different event handlers
 		// 		- set map not to display on mobile
 		// 		- test on mobile
+		// - eliminate cruft from grid layout and remove option
+		// - eliminate dependency on underscore.js
+		// - tidy up odd journeyman.js function structure??
+		// - get rid of everything named optica
 		// - map should only show once it has been fully loaded
 		// - integrate the onscroll event with the main javascript for the theme
-		// - make page degrade more elegantly when javascript is disabled (posts not invisible)
-		// - 1.0!!
-
-		var geojson = []
-		var markers = [];
+		// - make page degrade more elegantly when javascript is disabled (posts not inpost-active)
+		// **1.0!!
 		
 		function isNumber(n) {
 			return !isNaN(parseFloat(n)) && isFinite(n);
 		}
 		
-		$('.post').each(function() {
-			var placeToMap = false;	
-			var postID;
-			var coordinates = [];
-			var zoomLevel = 4;	
-			// var mapRelatedTags = 0;
-	
-			$(this).find('a.tag').each( function(i,item) {
-				var tagString = $(this).html();
-				var googleCoordinates = [];
-				
-				if (tagString.indexOf("place ") >= 0){
-					placeToMap = true;
-					postID = $(this).parents('article').attr('data-post-id');
-					googleCoordinates = tagString.replace('place ','').split(/[\s]+/);
-					coordinates[0] = googleCoordinates[1];
-					coordinates[1] = googleCoordinates[0];
-					// $(this).remove();
-					// mapRelatedTags++;
-				}
-		
-				if (tagString.indexOf("zoom ") >= 0) {
-					var zoomValue = tagString.replace('zoom ','');
-					var isZoomNumber = isNumber(zoomValue);
-					if(isZoomNumber) {
-						zoomLevel = parseInt(zoomValue);					
-					}				
-					// $(this).remove();				
-					// mapRelatedTags++;			
-				}	
-			} );
-	
-			// if the place & zoom tags are all the tags, remove the whole list
-			/* if(mapRelatedTags === noOfTags){
-				$(this).find('li.tags').remove();
-			} */
-	
-			if(placeToMap) {
-				// setup two data structures:
-				// one to easily go from the geometry to the post
-				// and the other to easily go from the post to the geometry
-				// TODO: get post date in case we are using the date markers
-				geojson.push( { 'geometry': { 'type': 'Point', 'coordinates': coordinates },
-								'properties': { 'postID': postID, 'markerText': 'NYI"' } } );
-				markers[postID] = {
-					"geojsonIndex": geojson.length, 
-					"coordinates": coordinates, 
-					"zoom": zoomLevel, 
-					"date": "NYI" };
-			}
-		});
+		function setActive(index, ease) {
+			postID = $(posts[index]).attr('data-post-id');
+			
+			$(".marker-wrapper").removeClass("marker-active");
+			$(".marker-" + postID).addClass("marker-active");
 
-		var main_layer = mapbox.layer().id('mas222.i1nib4id');
-		var post_markers = mapbox.markers.layer()
-			// Load up markers from geojson data.
-			.features(geojson)
+ 			$(posts[index]).addClass("post-active");
+ 			$(posts).slice(0,index).removeClass("post-active");
+ 			$(posts).slice(index+1).removeClass("post-active"); 	   
+			$(posts).addClass("scrolling");
+
+  			// TODO: Should change this to store function in a variable instead of in the DOM
+  			// TODO: Probably should not be in this fn, since it isn't about setting active post
+  			// TODO: Probably should move scrollTimer function to a permanent function to avoid recreating each time
+  			// TODO: When an ease is done, need to check if we're still at the right place, and if not, start a new ease
+			clearTimeout($.data(this, 'scrollTimer'));
+			var endScroll = function() {
+				$(posts).removeClass("scrolling");
+				if (markers[postID]) {
+					var dest = { "lat": markers[postID].coordinates[1], "lon": markers[postID].coordinates[0] };
+					if (Optica.lastMapMoveDest !== dest) { 
+						if (ease) {
+							map.ease.location(dest).zoom(markers[postID].zoom).optimal(.6);
+						} else {
+							map.centerzoom(dest, markers[postID].zoom);
+						}
+						Optica.lastMapMoveDest = dest;
+					}
+				}
+			}
+			$.data(this, 'scrollTimer', setTimeout(endScroll, 250));
+
+ 			return true;
+		}
+		
+		function addMarkers(posts) {
+			$(posts).each(function() {
+				var placeToMap = false;	
+				var postID;
+				var coordinates = [];
+				var zoomLevel = 4;	
+				
+				$(this).find('a.tag').each( function(i,item) {
+					var tagString = $(this).html();
+					var googleCoordinates = [];
+				
+					if (tagString.indexOf("place ") >= 0){
+						placeToMap = true;
+						postID = $(this).parents('article').attr('data-post-id');
+						googleCoordinates = tagString.replace('place ','').split(/[\s]+/);
+						coordinates[0] = googleCoordinates[1];
+						coordinates[1] = googleCoordinates[0];
+						if (Optica.HIDE_MAP_TAGS) $(this).parent().remove();
+					}
+		
+					if (tagString.indexOf("zoom ") >= 0) {
+						var zoomValue = tagString.replace('zoom ','');
+						var isZoomNumber = isNumber(zoomValue);
+						if (isZoomNumber) zoomLevel = parseInt(zoomValue);					
+						if (Optica.HIDE_MAP_TAGS) $(this).parent().remove();	
+					}	
+					
+					if (tagString === "r" && Optica.HIDE_MAP_TAGS) $(this).parent().remove();
+				} );
+	
+				// if we've removed all the tags, remove the tag list element as well
+				tagList = $(this).find('.attribution-tags>ul');
+				if (tagList.children('li').length === 0) {
+					tagList.remove();
+					$(this).find('.attribution-tags').remove();
+				} 
+	
+				if(placeToMap) {
+					// setup two data structures:
+					// one to easily go from the geometry to the post
+					// and the other to easily go from the post to the geometry
+					// TODO: get post date in case we are using the date markers
+					geojson.push( { 'geometry': { 'type': 'Point', 'coordinates': coordinates },
+									'properties': { 'postID': postID, 'markerText': 'NYI' } } );
+					markers[postID] = {
+						'geojsonIndex': geojson.length, 
+						'coordinates': coordinates, 
+						'zoom': zoomLevel, 
+						'date': 'NYI' };
+				}
+			});
+			
+			markersLayer.features(geojson);
+		}
+
+		function setLastPost(posts) {
+			// add the last-post class to the final post
+			// that class gives the post a larger bottom margin, to be sure it can clear
+			// the scroll point on the window to become visible
+			
+			if (!Optica.normalPostMargin) Optica.normalPostMargin = $(posts[0]).css('marginBottom');
+			
+			$(posts).filter('.last-post').css('marginBottom', Optica.normalPostMargin);
+			$(posts).removeClass('last-post');
+			
+			$(posts[posts.length-1]).addClass('last-post');
+			newMargin = $(window).height() / 2;
+			$(posts[posts.length-1]).css('marginBottom', newMargin + 'px');
+		}
+
+		var geojson = [];
+		var markers = [];
+
+		var mainLayer = mapbox.layer().id('mas222.i1nib4id');
+		var markersLayer = mapbox.markers.layer()
 			// Define a new factory function. Takes geojson input and returns a
 			// DOM element that represents the point.
 			.factory(function(f) {
-				// setup the marker as two nested divs since Mapbox.js uses transforms
+				// Set up the marker as two nested divs since Mapbox.js uses transforms
 				// to position the marker, but we also want to be able to use
 				// transforms (on the inner div) to style it.
 		  
@@ -962,45 +1041,18 @@
 				wrapper.appendChild(markerShadow);
 			
 				return wrapper;
-		  	});
+		  	}); 
 
-		var map = mapbox.map('map', [main_layer, post_markers], null, []);
-		map.centerzoom({ lat: 0, lon: 0 }, 2);
-
-		// Array of post elements.
-		var posts = document.getElementsByTagName("article");
-
-		// Helper to set the active section.
-		var setActive = function(index, ease) {
-			postID = $(posts[index]).attr('data-post-id');
-			
-			$(".marker-wrapper").removeClass("marker-active");
-			$(".marker-" + postID).addClass("marker-active");
-
- 			$(posts[index]).addClass("visible");
- 			$(posts).slice(0,index).removeClass("visible");
- 			$(posts).slice(index+1).removeClass("visible"); 	   
-			$(posts).addClass("scrolling");
-
-  			// TODO: Should change this to store function in a variable instead of in the DOM
-  			// TODO: Probably should not be in this fn, since it isn't about setting active post
-  			// TODO: Probably should move scrollTimer function to a permanent function to avoid recreating each time
-  			// TODO: When an ease is done, need to check if we're still at the right place, and if not, start a new ease
-			clearTimeout($.data(this, 'scrollTimer'));
-			$.data(this, 'scrollTimer', setTimeout(function() {
-				$(posts).removeClass("scrolling");
-		    	if (!map.ease.running() && markers[postID]) { 
-		    		var dest = { "lat": markers[postID].coordinates[1], "lon": markers[postID].coordinates[0] };
-		    		if (ease) {
-						map.ease.location(dest).zoom(markers[postID].zoom).optimal(.6);
-		  			} else {
-						map.centerzoom(dest, markers[postID].zoom);
-					}
-				}
-			}, 250));
-
- 			return true;
-		};
+		var posts = document.getElementsByTagName('article');
+		addMarkers(posts);
+		
+		var map = mapbox.map('map', [mainLayer, markersLayer], null, []);
+		
+		// Set map to first section, and make all but the first post invisible
+		setActive(0, false);
+		
+		// Set the margins on the last post
+		setLastPost(posts);
 
 		// Bind to scroll events to find the active section.
 		window.onscroll = _(function() {
@@ -1013,20 +1065,36 @@
 				var h = window.innerHeight;
 			}
 
-			// If scrolled to the very top of the page set the first section active.
-			if (y === 0) return setActive(0, true);
+			// If scrolled to the very top of the page show the header
+			// and set the first section active.
+			if (y <= 0) {
+				$('.avatar-wrapper').removeClass('inactive');
+				$('.title-group').removeClass('inactive');
+				return setActive(0, true);
+			}
+			
+			// Otherwise, hide the header . . .
+			$('.avatar-wrapper').addClass('inactive');
+			$('.title-group').addClass('inactive');
 
-			// Otherwise, conditionally determine the extent to which page must be
+			// . . .then determine the extent to which page must be
 			// scrolled for each section. The first section that matches the current
 			// scroll position wins and exits the loop early.
-			var cumulative_post_height = 60; //the height of the top of the first post at the top of the scroll
+			
+			header = $('#header');
+			postSection = $('#posts');
+			firstPostStart = $('#header').outerHeight(true) +
+				parseInt(postSection.css('marginTop')) + 
+				parseInt(postSection.css('paddingTop'));
+			
+			var cumulativePostHeight = firstPostStart; 
 			var margin = (h * 0.4);
 			var active = _(posts).any(function(el, index) {
 				// (y + margin) is the pixel offset, from the top of the page, that is 1/3 of the way down the window
 				// Add the height of each post, until we find the first post whose bottom has not yet cleared this point
 				// This is the active post
-				cumulative_post_height += $(el).outerHeight(true);
-				return (cumulative_post_height > (y + margin))  ? setActive(index, true) : false;
+				cumulativePostHeight += $(el).outerHeight(true);
+				return (cumulativePostHeight > (y + margin))  ? setActive(index, true) : false;
 			});
 
 			// If no section was set active the user has scrolled past the last section.
@@ -1043,10 +1111,9 @@
 		window.addEventListener('touchleave', function() { $(posts).removeClass("scrolling"); } );
 		*/
 
-		// Set map to first section.
-		setActive(0, false);
-
 		</script>
+		
+        <script src="https://dl.dropboxusercontent.com/u/96125344/journeyman.js"></script>
 
         {block:IfGoogleAnalyticsID}
             <script>

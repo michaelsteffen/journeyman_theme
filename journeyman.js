@@ -4,7 +4,9 @@ function tumblrNotesInserted() {
     } else {
         Optica.DONE_LOADING_NOTES = true
     }
-} (function (j_query, optica) {
+} 
+
+(function (j_query, optica) {
     var utils = {
         init: function () {
             this.globals();
@@ -302,45 +304,6 @@ function tumblrNotesInserted() {
             new drawer(this, options)
         })
     };
-    var parallaxer = function (selector, options) {
-        this.$el = j_query(selector);
-        this.options = j_query.extend({
-            animate_opacity: false,
-            animate_position: true,
-            inertia: .3,
-            opacity_inertia: .4
-        }, options || {});
-        this.inertia = this.options.inertia;
-        Optica.$win.on("Eventor:scroll", j_query.proxy(this.__window_scroll, this))
-    };
-    parallaxer.prototype = {
-        __window_scroll: function () {
-            this.parallax()
-        },
-        reset_offset: function () {
-            this.$el.css({
-                transform: "translate3d(0, 0, 0)"
-            })
-        },
-        parallax: function () {
-            var scroll_position = Optica.$win.scrollTop();
-            var parallax_position = Math.round(scroll_position * this.inertia);
-            if (parallax_position > 400) return;
-            if (this.options.animate_opacity) {
-                var scroll_fraction = scroll_position * this.options.opacity_inertia;
-                var opacity = (100 - scroll_fraction) / 100;
-                if (opacity < 0) opacity = 0;
-                this.$el.css({
-                    opacity: opacity
-                })
-            }
-            if (this.options.animate_position) {
-                this.$el.css({
-                    transform: "translate3d(0," + parallax_position + "px, 0)"
-                })
-            }
-        }
-    };
     var iframe = function (selector, options, callback) {
         if (!(this instanceof iframe)) {
             return new iframe(selector, options, callback)
@@ -549,19 +512,13 @@ function tumblrNotesInserted() {
         this.bind_events();
         if (this.config.endless_scrolling && this.config.$pagination.length) {
             this.config.$pagination.addClass("invisible");
-            this.init = true
+            this.init = true;
         } else {
-            this.init = false
-        } if (Optica.$body.hasClass("touch") || this.$html.hasClass("lt-ie9")) {
-            Optica.GRID_LAYOUT = false;
-            this.is_grid_layout = false;
-            Optica.$body.removeClass("grid")
-        }
+            this.init = false;
+        } 
         this.update_body();
         this.remove_empty_quotes();
-        if (!Optica.GRID_LAYOUT) {
-            this.update_spotify()
-        }
+        this.update_spotify();
         this.set_embed_size(j_query('.video-wrapper iframe[src^="//instagram"]'));
         this.update_video_player(j_query(".tumblr_video_container, .video-embed iframe"));
         this.update_iframes();
@@ -700,44 +657,45 @@ function tumblrNotesInserted() {
             this.hide_loader(true)
         },
         _append_new_posts: function (context) {
+        	// pages are the <div>s immediately below the #posts <section> 
+        	// individual posts are <article> elements within a page <div>
+        	// context is typically the ajax return
+        	// get the pages and posts in the context
             var pages = j_query(context).find("#posts > div");
             var articles = pages.children();
             var post_ids = [];
+            
+            // add the pages from the context to the main document
             this.config.$target.append(pages);
-            articles.each(j_query.proxy(function (index, el) {
-                post_ids.push(j_query(el).find(".like_button").data("post-id"))
-            }, this));
+            addMarkers(articles);
+            
+            // cleanup of various post elements
             this.set_embed_size(articles.find('.video-wrapper iframe[src^="//instagram"]'));
             this.update_video_player(articles.find(".tumblr_video_container, .video-embed iframe"));
             this.update_iframes(pages);
             this.remove_empty_quotes(pages);
-            if (Optica.GRID_LAYOUT && this.is_grid_layout) {
-                articles.imagesLoaded(j_query.proxy(function () {
-                    pages.iframesLoaded({
-                        selector: "iframe.photoset"
-                    }, j_query.proxy(function () {
-                        this.config.$target.masonry("appended", articles, true);
-                        this.loading_data = false;
-                        this.animate_posts(articles);
-                        this.hide_loader()
-                    }, this))
-                }, this))
-            } else {
-                this.loading_data = false;
-                this.update_spotify(pages);
-                if (Optica.$body.hasClass("narrow")) this.upscale_images(pages);
-                articles.fadeTo(300, 1);
-                this.hide_loader()
-            }
-            Tumblr.LikeButton.get_status_by_post_ids(i);
+            this.update_spotify(pages);
+            setLastPost(j_query('article'));
+            if (Optica.$body.hasClass("narrow")) this.upscale_images(pages);
+            
+            this.loading_data = false;
+            this.hide_loader();
+            
+            // setup Tumblr liking for the new posts
+            articles.each(j_query.proxy(function (index, el) {
+                post_ids.push(j_query(el).find(".like_button").data("post-id"))
+            }, this));
+            Tumblr.LikeButton.get_status_by_post_ids(post_ids);
+            
             if (window.ga) {
                 ga("send", "pageview", {
                     page: "/page/" + this.next_page_number,
                     title: "Index Page -- Ajax Load"
                 })
             }
+            
             this.current_page = this.next_page_number;
-            this.next_page_number++
+            this.next_page_number++;
         },
         cache_selectors: function () {
             this.$html = j_query("html");
@@ -957,7 +915,6 @@ function tumblrNotesInserted() {
     optica.Utils = utils;
     optica.Eventor = eventor;
     optica.Popmenu = popmenu;
-    optica.Parallaxer = parallaxer;
     optica.Drawer = drawer;
     optica.Pager = pager;
     optica.NotesPager = notes_pager
@@ -967,15 +924,6 @@ $(document).ready(function () {
     Optica.Utils.init();
     Optica.Eventor.init();
     var body = $("body");
-    if (body.hasClass("contain-header-image")) {
-    	//options here don't seem to work.  Why??
-        new Optica.Parallaxer("body:not(.ie10, .touch) .parallax", {
-            animate_opacity: true,
-            animate_position: false
-        })
-    } else {
-        new Optica.Parallaxer("body:not(.ie10, .touch) .parallax")
-    }
     new Optica.Pager(window, {
         $pagination: $("#pagination a"),
         $loader: $("#pagination .loader"),
