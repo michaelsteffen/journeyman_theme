@@ -860,18 +860,25 @@
 		// =====================
 		
 		// TODO:
-		// - trigger ease on previous ease end and/or restart ease when destination changes
-		//   (will require a global variable with the last ease destination, since easey doesn't have a .to() getter 
-		// **0.5!! (share with Mike & Eric & Dad & Matthew)
+		// **0.5!! (share with Mike & Eric)
 		
-		// - fix positioning for inactive long posts (now too far down b/c scaling is even  middle)
-		// - fix bug -- controls should appear next to tags
-		// - reset last post bottom margin on window resize
+		// - add "scroll for next" text on first page
+		// - add down arrow to posts that schools to the next one
+		// - add controls back to map (plus "home" control)
+		// - add text color option
+		// - add larger gaps between posts & eliminate partial opacity during scrolling
+		// - add group tags (g 1) with auto-zoom to the group
+		// - shift cards to left or right depending on marker position
+		// - add larger margin over tumblr twiddler
+		// - what does collapse navigation option do??
+		// - move static files to AWS from Dropbox
+		// - what is calling eventor.nextframe? (flame chart)
+		// - optimize scrolling by only getting and storing post positions once instead of on every scroll event
+		// - use footer instead of javascript to space out last post at the end
 		// - inactivate clicks on hidden posts
 		// - refactor handling of full post list
 		// - add menu selection to reverse order
-		// - add down arrow to first post?
-		// - Make menu stick 
+		// - make menu stick 
 		// - add date to posts / fix date in drawer
 		// - outline title text?
 		// - Fix map width for narrow layout
@@ -890,10 +897,7 @@
 		//		- possible to fix the issue where a marker becomes inactive then active again on new page?
 		//		  (try adding one by one instead of bulk add?)
 		//		  (or call setactive immediately after calling add?)
-		// - Mobile optimization: 
-		// 		- add scroll effect for tablet using different event handlers
-		// 		- set map not to display on mobile
-		// 		- test on mobile
+		//		- entrance animation for markers?
 		// - eliminate cruft from grid layout and remove option
 		// - eliminate dependency on underscore.js
 		// - tidy up odd journeyman.js function structure??
@@ -902,6 +906,11 @@
 		// - integrate the onscroll event with the main javascript for the theme
 		// - make page degrade more elegantly when javascript is disabled (posts not inpost-active)
 		// **1.0!!
+		
+		// - Mobile optimization: 
+		// 		- set map not to display on mobile
+		// 		- test on mobile
+		// **2.0
 		
 		function isNumber(n) {
 			return !isNaN(parseFloat(n)) && isFinite(n);

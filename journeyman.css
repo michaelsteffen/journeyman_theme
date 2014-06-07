@@ -1061,11 +1061,11 @@ article.active .post-footer {
     font-size: 70px;
     height: 40px;
     width: 40px;
-    -webkit-animation: wiggle 0.6s ease-out;
+/*    -webkit-animation: wiggle 0.6s ease-out;
     -o-animation: wiggle 0.6s ease-out;
     -ms-animation: wiggle 0.6s ease-out;
     -moz-animation: wiggle 0.6s ease-out;
-    animation: wiggle 0.6s ease-out;
+    animation: wiggle 0.6s ease-out; */
     position: absolute;
     margin-top: -75px;
     left: -26px;
