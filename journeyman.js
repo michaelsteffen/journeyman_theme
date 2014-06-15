@@ -659,7 +659,8 @@ function tumblrNotesInserted() {
         _append_new_posts: function (context) {
         	// pages are the <div>s immediately below the #posts <section> 
         	// individual posts are <article> elements within a page <div>
-        	// context is typically the ajax return
+        	// context is typically the ajax return when we get a new page of posts
+        	
         	// get the pages and posts in the context
             var pages = j_query(context).find("#posts > div");
             var articles = pages.children();
@@ -705,7 +706,6 @@ function tumblrNotesInserted() {
         animate: function () {
             if (this.go_to_position && !this.animating) {
                 this.animating = true;
-                // var t = 0;
                 j_query("html,body").stop().animate({
                     scrollTop: this.go_to_position - 10
                 }, 250, j_query.proxy(function () {
@@ -739,11 +739,12 @@ function tumblrNotesInserted() {
                 clearTimeout(this.animate_timer);
             }
         },
-        next_post: function () {
+        next_post: function (cur_post) {
             this.update_post_info();
+            var current_position = cur_post ? this.post_positions[cur_post] : this.current_position + 12;
             for (var i in this.post_positions) {
                 var post_position = this.post_positions[i];
-                if (post_position > this.current_position + 12 && (post_position < this.go_to_position || !this.go_to_position)) {
+                if (post_position > current_position && (post_position < this.go_to_position || !this.go_to_position)) {
                     this.go_to_position = post_position;
                 }
             }
@@ -789,7 +790,7 @@ function tumblrNotesInserted() {
         update_post_info: function () {
             this.update_post_positions();
             this.current_position = window.pageYOffset || document.documentElement && document.documentElement.scrollTop || document.body.scrollTop;
-            this.go_to_position = 0
+            this.go_to_position = 0;
         },
         update_post_positions: function () {
             var positions = {};

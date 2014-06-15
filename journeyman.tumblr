@@ -373,16 +373,11 @@
    			
    			#posts article {
    				opacity: 0;
-   				-webkit-transform: scale(.95, .95);
-   				-o-transform: scale(.95, .95);
-   				-ms-transform: scale(.95, .95);
-     			-moz-transform: scale(.95, .95);
-   				transform: scale(.95, .95);
-   				-webkit-transition: margin-bottom 0.2s, opacity .5s, -webkit-transform .5s;
-				-o-transition: margin-bottom 0.2s, opacity .5s, -o-transform .5s;
-				-ms-transition: margin-bottom 0.2s, opacity .5s, -ms-transform .5s; 
-				-moz-transition: margin-bottom 0.2s, opacity .5s, -moz-transform .5s; 
-				transition: margin-bottom 0.2s, opacity .5s, transform .5s; 
+   				-webkit-transition: margin-bottom 0.2s, opacity .5s;
+				-o-transition: margin-bottom 0.2s, opacity .5s;
+				-ms-transition: margin-bottom 0.2s, opacity .5s; 
+				-moz-transition: margin-bottom 0.2s, opacity .5s; 
+				transition: margin-bottom 0.2s, opacity .5s; 
 			}
 			
 			#posts article.scrolling {
@@ -391,38 +386,19 @@
 			
 			#posts article.post-active {
    				opacity: 1;
-   				-webkit-transform: scale(1, 1);
-   				-o-transform: scale(1, 1);
-   				-ms-transform: scale(1, 1);
-     			-moz-transform: scale(1, 1);
-   				transform: scale(1, 1);
-			}
-			
-			#posts article.post-active {
-   				opacity: 1;
-   				-webkit-transform: scale(1, 1);
-   				-o-transform: scale(1, 1);
-   				-ms-transform: scale(1, 1);
-     			-moz-transform: scale(1, 1);
-   				transform: scale(1, 1);
 			}
 			
 			.avatar-wrapper, 
 			.title-group {
-			   	-webkit-transition: opacity .5s, -webkit-transform .5s;
-				-o-transition: opacity .5s, -o-transform .5s;
-				-ms-transition: opacity .5s, -ms-transform .5s; 
-				-moz-transition: opacity .5s, -moz-transform .5s; 
-				transition: opacity .5s, transform .5s; 
+			   	-webkit-transition: opacity .5s;
+				-o-transition: opacity .5s;
+				-ms-transition: opacity .5s; 
+				-moz-transition: opacity .5s; 
+				transition: opacity .5s; 
 			}
 			
 			.avatar-wrapper.inactive, 
 			.title-group.inactive {
-			   	-webkit-transform: scale(.95, .95);
-   				-o-transform: scale(.95, .95);
-   				-ms-transform: scale(.95, .95);
-     			-moz-transform: scale(.95, .95);
-   				transform: scale(.95, .95);
    				opacity: 0;
    			}
   	
@@ -749,20 +725,7 @@
                                     
                                     {block:Date}
                                     <section class="panel">
-                                        <footer class="post-footer">
-                                            <section class="meta"> 
-                                                <ul class="date-notes">
-                                                    {block:NoteCount}
-                                                    <li class="post-notes">
-                                                        <a href="{Permalink}#notes">{NoteCountWithLabel}</a>
-                                                    </li>
-                                                    {/block:NoteCount}
-                                                    <li class="post-date"> 
-                                                        <a href="{Permalink}" title="{TimeAgo}">{ShortMonth} {DayOfMonth}{DayOfMonthSuffix}, {Year}</a>
-                                                    </li>
-                                                </ul>
-                                            </section>
-                                            
+                                        <footer class="post-footer">                                            
                                             <section class="post-controls">
                                                 <ul>
                                                     <li class="share-control">
@@ -782,6 +745,23 @@
                                                     <li class="reblog-control">{ReblogButton size="21" color="black"}</li>
                                                     <li class="like-control">{LikeButton size="20" color="black"}</li>
                                                 </ul>
+                                            </section>
+                                            
+                                            <section class="meta"> 
+                                                <ul class="date-notes">
+                                                    {block:NoteCount}
+                                                    <li class="post-notes">
+                                                        <a href="{Permalink}#notes">{NoteCountWithLabel}</a>
+                                                    </li>
+                                                    {/block:NoteCount}
+                                                    <li class="post-date"> 
+                                                        <a href="{Permalink}" title="{TimeAgo}">{ShortMonth} {DayOfMonth}{DayOfMonthSuffix}, {Year}</a>
+                                                    </li>
+                                                </ul>
+                                            </section>
+                                            
+                                            <section class="post-next">
+                                            	<a href="#!" onclick="Optica.Pager.instances[0].next_post('post_{PostID}'); return false;">Next &#x25BC;</a>
                                             </section>
                                         </footer>
                                     </section>
@@ -860,15 +840,15 @@
 		// =====================
 		
 		// TODO:
-		// **0.5!! (share with Mike & Eric)
-		
-		// - add "scroll for next" text on first page
-		// - add down arrow to posts that schools to the next one
+		// - fix placement of "note" text
+		// - make non-JS post margin larger
+		// - call setPostMargin on window resize
+		// - disable opacity effect in safari
+		// - add group tags (g 1) with auto-zoom to the group
+		//	 	- allow posts to switch sides of the page
+		// - add more vivid color for active marker
 		// - add controls back to map (plus "home" control)
 		// - add text color option
-		// - add larger gaps between posts & eliminate partial opacity during scrolling
-		// - add group tags (g 1) with auto-zoom to the group
-		// - shift cards to left or right depending on marker position
 		// - add larger margin over tumblr twiddler
 		// - what does collapse navigation option do??
 		// - move static files to AWS from Dropbox
@@ -1006,19 +986,10 @@
 			markersLayer.features(geojson);
 		}
 
-		function setLastPost(posts) {
-			// add the last-post class to the final post
-			// that class gives the post a larger bottom margin, to be sure it can clear
-			// the scroll point on the window to become visible
-			
-			if (!Optica.normalPostMargin) Optica.normalPostMargin = $(posts[0]).css('marginBottom');
-			
-			$(posts).filter('.last-post').css('marginBottom', Optica.normalPostMargin);
-			$(posts).removeClass('last-post');
-			
-			$(posts[posts.length-1]).addClass('last-post');
+		// set the post margin to half the window height
+		function setPostMargins(posts) {
 			newMargin = $(window).height() / 2;
-			$(posts[posts.length-1]).css('marginBottom', newMargin + 'px');
+			$(posts).css('marginBottom', newMargin + 'px');
 		}
 
 		var geojson = [];
@@ -1060,8 +1031,7 @@
 		// Set map to first section, and make all but the first post invisible
 		setActive(0, false);
 		
-		// Set the margins on the last post
-		setLastPost(posts);
+		setPostMargins(posts);
 
 		// Bind to scroll events to find the active section.
 		window.onscroll = _(function() {
