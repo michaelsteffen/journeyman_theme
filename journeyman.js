@@ -1,12 +1,12 @@
 function tumblrNotesInserted() {
     if ($(".more_notes_link").length) {
-        Optica.LOADING_NOTES = false
+        Journeyman.LOADING_NOTES = false
     } else {
-        Optica.DONE_LOADING_NOTES = true
+        Journeyman.DONE_LOADING_NOTES = true;
     }
 } 
 
-(function (j_query, optica) {
+(function (j_query, journeyman) {
     var utils = {
         init: function () {
             this.globals();
@@ -21,18 +21,18 @@ function tumblrNotesInserted() {
                 this.load_header()
             }
             if (Function("/*@cc_on return document.documentMode===10@*/")()) {
-                Optica.$body.addClass("ie10")
+                Journeyman.$body.addClass("ie10")
             }
         },
         globals: function () {
-            Optica.$win = j_query(window);
-            Optica.$doc = j_query(document);
-            Optica.$body = j_query("body");
-            Optica.$win_body = j_query("html, body")
+            Journeyman.$win = j_query(window);
+            Journeyman.$doc = j_query(document);
+            Journeyman.$body = j_query("body");
+            Journeyman.$win_body = j_query("html, body")
         },
         in_iframe: function () {
             if (window.self !== window.top) {
-                Optica.$body.addClass("iframe")
+                Journeyman.$body.addClass("iframe")
             }
         },
         is_touch_device: function () {
@@ -40,7 +40,7 @@ function tumblrNotesInserted() {
         },
         load_header: function () {
             var header_img_div = j_query(".header-image");
-            if (Optica.$body.hasClass("iframe") || Optica.$body.hasClass("touch")) {
+            if (Journeyman.$body.hasClass("iframe") || Journeyman.$body.hasClass("touch")) {
                 header_img_div.css({
                     opacity: 1
                 }).addClass("loaded")
@@ -60,34 +60,33 @@ function tumblrNotesInserted() {
             })
         },
         link_color: function () {
-            var accent_color = Optica.Utils.hex_to_hsv(Optica.ACCENT_COLOR);
-            var bg_color = Optica.Utils.hex_to_hsv(Optica.BACKGROUND_COLOR);
+            var accent_color = Journeyman.Utils.hex_to_hsv(Journeyman.ACCENT_COLOR);
+            var bg_color = Journeyman.Utils.hex_to_hsv(Journeyman.BACKGROUND_COLOR);
             if (accent_color.s < .2 && accent_color.v > .8) {
-                Optica.$body.addClass("light-accent");
+                Journeyman.$body.addClass("light-accent");
                 if (bg_color.s < .2 && bg_color.v > .8) {
-                    Optica.$body.addClass("light-on-light")
+                    Journeyman.$body.addClass("light-on-light")
                 }
             }
             if (accent_color.v < .2 && bg_color.v < .2) {
-                Optica.$body.addClass("dark-on-dark")
+                Journeyman.$body.addClass("dark-on-dark")
             }
         },
         description_color: function () {
             var description_div = j_query(".title-group .description");
             if (!description_div.length) return;
-            var title_color = Optica.Utils.hex_to_rgb(Optica.TITLE_COLOR);
+            var title_color = Journeyman.Utils.hex_to_rgb(Journeyman.TITLE_COLOR);
             description_div.css({
                 color: "rgba(" + title_color.r + "," + title_color.g + "," + title_color.b + ", 0.7)"
             })
         },
         devices: function () {
-            //var e;
             var user_agent = navigator.userAgent;
             var match;
             var ver;
             if (this.is_touch_device()) {
-                Optica.$body.addClass("touch");
-                if (!Optica.$body.hasClass("permalink")) {
+                Journeyman.$body.addClass("touch");
+                if (!Journeyman.$body.hasClass("permalink")) {
                     setTimeout(function () {
                         window.scrollTo(0, 1)
                     }, 1)
@@ -97,14 +96,14 @@ function tumblrNotesInserted() {
                 this.ios()
             } else if (n = user_agent.match(/Android\s([0-9\.]*)/)) {
                 ver = match[1];
-                Optica.$body.addClass("android");
+                Journeyman.$body.addClass("android");
                 if (parseFloat(ver) < 4.4) {
-                    Optica.$body.addClass("android-lt-4-4")
+                    Journeyman.$body.addClass("android-lt-4-4")
                 }
             }
         },
         ios: function () {
-            Optica.$body.addClass("ios");
+            Journeyman.$body.addClass("ios");
             j_query("#posts").on("click", "a.open-in-app", j_query.proxy(function (event) {
                 event.preventDefault();
                 var post_id = j_query(event.currentTarget).data("post");
@@ -199,11 +198,11 @@ function tumblrNotesInserted() {
             if (n.length < 6) {
                 n = n[0] + n[0] + n[1] + n[1] + n[2] + n[2]
             }
-            var r = optica.Utils.hex_to_rgb(n);
+            var r = journeyman.Utils.hex_to_rgb(n);
             var i = j_query.map(r, function (e) {
                 return e
             });
-            var s = optica.Utils.rgb_to_hsv.apply(optica.Utils, i);
+            var s = journeyman.Utils.rgb_to_hsv.apply(journeyman.Utils, i);
             return s
         },
         hsv_to_hex: function (n, r, i) {
@@ -246,7 +245,7 @@ function tumblrNotesInserted() {
             this.event_loop()
         },
         event_loop: function () {
-            Optica.$win.on("scroll.Eventor:next-frame", j_query.proxy(function () {
+            Journeyman.$win.on("scroll.Eventor:next-frame", j_query.proxy(function () {
                 if (!this.tick) {
                     request_frame(j_query.proxy(this.next_frame, this));
                     this.tick = true
@@ -254,7 +253,7 @@ function tumblrNotesInserted() {
             }, this))
         },
         next_frame: function (j_query) {
-            Optica.$win.trigger("Eventor:scroll");
+            Journeyman.$win.trigger("Eventor:scroll");
             this.tick = false
         }
     };
@@ -289,7 +288,7 @@ function tumblrNotesInserted() {
             e.addClass("active")
         },
         hide: function (e) {
-            Optica.Popmenu.hide_all();
+            Journeyman.Popmenu.hide_all();
             this.leave_delay = setTimeout(j_query.proxy(function () {
                 e.removeClass("active");
                 clearTimeout(this.leave_delay)
@@ -376,8 +375,8 @@ function tumblrNotesInserted() {
     };
     popmenu.prototype = {
         __document_click: function (e) {
-            var n = j_query(e.target);
-            if (this.$popover && this.$popover.hasClass("active") && !this.$el.has(n.parents(this.config.container)).length) {
+            var target = j_query(e.target);
+            if (this.$popover && this.$popover.hasClass("active") && !this.$el.has(target.parents(this.config.container)).length) {
                 this.hide()
             }
         },
@@ -394,7 +393,7 @@ function tumblrNotesInserted() {
             }
         },
         _check_offset: function () {
-            if (Math.abs(this.scroll_offset - Optica.$win.scrollTop()) > this.config.scroll_distance) {
+            if (Math.abs(this.scroll_offset - Journeyman.$win.scrollTop()) > this.config.scroll_distance) {
                 if (!this.$search_input.is(":focus")) {
                     this.hide()
                 }
@@ -402,11 +401,11 @@ function tumblrNotesInserted() {
         },
         bind_events: function () {
             this.$el.on("touchstart click", this.trigger, this.events.trigger_click);
-            Optica.$doc.on("click", this.events.document_click)
+            Journeyman.$doc.on("click", this.events.document_click)
         },
         unbind_events: function () {
             this.$el.off("click", this.trigger, this.events.trigger_click);
-            Optica.$doc.off("click", this.events.document_click)
+            Journeyman.$doc.off("click", this.events.document_click)
         },
         destroy: function () {},
         show: function () {
@@ -418,15 +417,15 @@ function tumblrNotesInserted() {
                 this.$trigger.addClass("active");
                 this.$container.addClass("active");
                 this.$popover.addClass("active");
-                this.scroll_offset = Optica.$win.scrollTop();
-                Optica.$win.on("Eventor:scroll", this.events.offset_scroll)
+                this.scroll_offset = Journeyman.$win.scrollTop();
+                Journeyman.$win.on("Eventor:scroll", this.events.offset_scroll)
             }, this), 10)
         },
         hide: function (delay) {
             this.$search_input.blur();
             var popover = this.$el.find(this.config.popover);
             var trigger = this.$el.find(this.config.trigger);
-            Optica.$win.off("Eventor:scroll", this.events.offset_scroll);
+            Journeyman.$win.off("Eventor:scroll", this.events.offset_scroll);
             if (this.$glass) this.$glass.removeClass("active");
             if (this.$container) this.$container.removeClass("active");
             trigger.removeClass("active");
@@ -464,31 +463,31 @@ function tumblrNotesInserted() {
     };
     var notes_pager = {
         __window_scroll: function () {
-            if (Optica.DONE_LOADING_NOTES) {
+            if (Journeyman.DONE_LOADING_NOTES) {
                 this.unbind_events()
             }
-            if (this._near_bottom() && !Optica.LOADING_NOTES) {
+            if (this._near_bottom() && !Journeyman.LOADING_NOTES) {
                 this.load_notes()
             }
         },
         _near_bottom: function () {
-            return Optica.$doc.height() - Optica.$win.scrollTop() < Optica.$win.height() * 3
+            return Journeyman.$doc.height() - Journeyman.$win.scrollTop() < Journeyman.$win.height() * 3
         },
         init: function () {
-            Optica.LOADING_NOTES = false;
+            Journeyman.LOADING_NOTES = false;
             this.events = {
                 scroll: j_query.proxy(this.__window_scroll, this)
             };
             this.bind_events()
         },
         bind_events: function () {
-            Optica.$win.on("Eventor:scroll", this.events.scroll)
+            Journeyman.$win.on("Eventor:scroll", this.events.scroll)
         },
         unbind_events: function () {
-            Optica.$win.off("Eventor:scroll", this.events.scroll)
+            Journeyman.$win.off("Eventor:scroll", this.events.scroll)
         },
         load_notes: function () {
-            Optica.LOADING_NOTES = true;
+            Journeyman.LOADING_NOTES = true;
             j_query(".more_notes_link").trigger("click")
         }
     };
@@ -522,7 +521,7 @@ function tumblrNotesInserted() {
         this.set_embed_size(j_query('.video-wrapper iframe[src^="//instagram"]'));
         this.update_video_player(j_query(".tumblr_video_container, .video-embed iframe"));
         this.update_iframes();
-        if (Optica.$body.hasClass("narrow")) this.upscale_images();
+        if (Journeyman.$body.hasClass("narrow")) this.upscale_images();
         this.set_body_type();
         pager.register(this);
         return this
@@ -531,32 +530,32 @@ function tumblrNotesInserted() {
         __document_keydown: function (key) {
             var code = key.charCode ? key.charCode : key.keyCode;
             var target = key ? key.target : window.event.srcElement;
-            if (j_query(target).is("input:focus") || this.is_grid_layout) return;
+            if (j_query(target).is("input:focus")) return;
             if (code === 74) {
                 this.next_post()
             } else if (code === 75) {
                 this.previous_post()
             } else if (code === 190) {
-                Optica.$win_body.animate({
+                Journeyman.$win_body.animate({
                     scrollTop: 0
                 })
             }
         },
         __window_resize: function () {
             this.set_body_type();
-            if (!this.is_grid_layout) this.update_spotify();
+            this.update_spotify();
             this.update_video_player(j_query(".tumblr_video_container, .video-embed iframe"));
             this.update_iframes()
         },
         __window_scroll: function () {
-            if (Optica.$body.hasClass("touch")) this.update_body();
+            if (Journeyman.$body.hasClass("touch")) this.update_body();
             if (!this.is_scrolling) {
-                Optica.$body.addClass("is-scrolling");
+                Journeyman.$body.addClass("is-scrolling");
                 this.is_scrolling = true
             }
             clearTimeout(this.body_timeout);
             this.body_timeout = setTimeout(j_query.proxy(function () {
-                Optica.$body.removeClass("is-scrolling");
+                Journeyman.$body.removeClass("is-scrolling");
                 this.is_scrolling = false
             }, this), 200);
             if (!this.init) return;
@@ -595,7 +594,7 @@ function tumblrNotesInserted() {
             }
         },
         _get_window_bounds: function () {
-            this.window_height = Optica.$win.height()
+            this.window_height = Journeyman.$win.height()
         },
         _get_post_bounds: function (post) {
             return j_query.data(post[0], "offsets")
@@ -612,8 +611,8 @@ function tumblrNotesInserted() {
         },
         _in_view: function (post) {
             var bounds;
-            var position = Optica.$win.scrollTop();
-            this.window_height = this.window_height || Optica.$win.height();
+            var position = Journeyman.$win.scrollTop();
+            this.window_height = this.window_height || Journeyman.$win.height();
             var window_bottom = position + this.window_height;
             bounds = this._get_post_bounds(post);
             if (!bounds) {
@@ -632,14 +631,14 @@ function tumblrNotesInserted() {
             e.removeClass("snooze");
         },
         _near_bottom: function () {
-            var offset = this.is_grid_layout ? 1.25 : 3;
-            return Optica.$doc.height() - this.$el.scrollTop() < this.$el.height() * offset;
+            var offset = 3;
+            return Journeyman.$doc.height() - this.$el.scrollTop() < this.$el.height() * offset;
         },
         _near_top: function () {
-            return !!(Optica.$win.scrollTop() < 50);
+            return !!(Journeyman.$win.scrollTop() < 50);
         },
         _slender: function () {
-            if (Optica.$win.width() < 720) {
+            if (Journeyman.$win.width() < 720) {
                 return true;
             }
             return false;
@@ -677,7 +676,7 @@ function tumblrNotesInserted() {
             this.remove_empty_quotes(pages);
             this.update_spotify(pages);
             setLastPost(j_query('article'));
-            if (Optica.$body.hasClass("narrow")) this.upscale_images(pages);
+            if (Journeyman.$body.hasClass("narrow")) this.upscale_images(pages);
             
             this.loading_data = false;
             this.hide_loader();
@@ -713,22 +712,6 @@ function tumblrNotesInserted() {
                 }, this))
             }
         },
-        set_masonry: function () {
-            var post_container = j_query("#posts");
-            var articles = posts.find("article");
-            post_container.imagesLoaded(j_query.proxy(function () {
-                post_container.iframesLoaded({
-                    selector: "iframe.photoset"
-                }, j_query.proxy(function () {
-                    post_container.masonry({
-                        itemSelector: "article",
-                        isFitWidth: true
-                    });
-                    this.animate_posts(articles)
-                }, this))
-            }, this));
-            this.is_grid_layout = true
-        },
         animate_posts: function (posts) {
             posts.first().fadeTo(250, 1);
             if (posts.length > 0) {
@@ -762,29 +745,18 @@ function tumblrNotesInserted() {
         },
         set_body_type: function () {
             if (this._slender()) {
-                Optica.$body.addClass("slender").removeClass("grid");
-                if (Optica.GRID_LAYOUT && this.is_grid_layout) {
-                    this.config.$target.css({
-                        width: "auto"
-                    });
-                    this.config.$target.masonry("destroy");
-                    this.is_grid_layout = false
-                }
+                Journeyman.$body.addClass("slender");
             } else {
-                Optica.$body.removeClass("slender");
-                if (Optica.GRID_LAYOUT && Optica.$body.hasClass("index-page")) {
-                    Optica.$body.addClass("grid");
-                    this.set_masonry()
-                }
+                Journeyman.$body.removeClass("slender");
             }
         },
         update_body: function () {
             if (this._near_top()) {
-                Optica.$body.addClass("top");
-                Optica.$body.removeClass("below-header")
+                Journeyman.$body.addClass("top");
+                Journeyman.$body.removeClass("below-header")
             } else {
-                Optica.$body.removeClass("top");
-                Optica.$body.addClass("below-header")
+                Journeyman.$body.removeClass("top");
+                Journeyman.$body.addClass("below-header")
             }
         },
         update_post_info: function () {
@@ -803,7 +775,7 @@ function tumblrNotesInserted() {
         bind_events: function () {
             this.$el.on("Eventor:scroll", j_query.proxy(this.__window_scroll, this));
             this.$el.on("resize orientationchange", j_query.proxy(this._debounce(this.__window_resize, this.config.resizeDelay), this));
-            Optica.$doc.on("keydown", j_query.proxy(this.__document_keydown, this))
+            Journeyman.$doc.on("keydown", j_query.proxy(this.__document_keydown, this))
         },
         update_spotify: function (context) {
             var audio_width = j_query(".audio_container").width();
@@ -868,7 +840,7 @@ function tumblrNotesInserted() {
             })
         },
         update_iframes: function (context) {
-            if (!Optica.$body.hasClass("touch")) return;
+            if (!Journeyman.$body.hasClass("touch")) return;
             var frames = context && context.length ? j_query("iframe.tumblr_audio_player, iframe.photoset", context) : j_query("iframe.tumblr_audio_player, iframe.photoset");
             frames.each(function () {
                 var this_el = j_query(this);
@@ -913,28 +885,28 @@ function tumblrNotesInserted() {
             new pager(this, options)
         })
     };
-    optica.Utils = utils;
-    optica.Eventor = eventor;
-    optica.Popmenu = popmenu;
-    optica.Drawer = drawer;
-    optica.Pager = pager;
-    optica.NotesPager = notes_pager
-})(jQuery, Optica);
+    journeyman.Utils = utils;
+    journeyman.Eventor = eventor;
+    journeyman.Popmenu = popmenu;
+    journeyman.Drawer = drawer;
+    journeyman.Pager = pager;
+    journeyman.NotesPager = notes_pager
+})(jQuery, Journeyman);
 
 $(document).ready(function () {
-    Optica.Utils.init();
-    Optica.Eventor.init();
+    Journeyman.Utils.init();
+    Journeyman.Eventor.init();
     var body = $("body");
-    new Optica.Pager(window, {
+    new Journeyman.Pager(window, {
         $pagination: $("#pagination a"),
         $loader: $("#pagination .loader"),
-        endless_scrolling: Optica.ENDLESS_SCROLLING
+        endless_scrolling: Journeyman.ENDLESS_SCROLLING
     });
     $("body:not(.touch) #posts").drawer({
         trigger: "article:not(.exposed)"
     });
     $("#page").popmenu();
-    if (body.hasClass("permalink") && $(".more_notes_link").length && Optica.ENDLESS_NOTES_SCROLLING) {
-        Optica.NotesPager.init()
+    if (body.hasClass("permalink") && $(".more_notes_link").length && Journeyman.ENDLESS_NOTES_SCROLLING) {
+        Journeyman.NotesPager.init()
     }
 })

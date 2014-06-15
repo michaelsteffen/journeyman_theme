@@ -761,7 +761,7 @@
                                             </section>
                                             
                                             <section class="post-next">
-                                            	<a href="#!" onclick="Optica.Pager.instances[0].next_post('post_{PostID}'); return false;">Next &#x25BC;</a>
+                                            	<a href="#!" onclick="Journeyman.Pager.instances[0].next_post('post_{PostID}'); return false;">Next &#x25BC;</a>
                                             </section>
                                         </footer>
                                     </section>
@@ -817,15 +817,14 @@
             </footer>
         </section>
         <script>
-            var Optica = {};
-            Optica.ENDLESS_SCROLLING = {block:IfEndlessScrolling}true{/block:IfEndlessScrolling}{block:IfNotEndlessScrolling}false{/block:IfNotEndlessScrolling};
-            Optica.LAYOUT = "{select:Layout}";
-            Optica.GRID_LAYOUT = (Optica.LAYOUT === 'grid');
-            Optica.TITLE_COLOR = "{TitleColor}";
-            Optica.ACCENT_COLOR = "{AccentColor}";
-            Optica.BACKGROUND_COLOR = "{BackgroundColor}";
-            Optica.ENDLESS_NOTES_SCROLLING = {block:IfDisqusShortname}false{/block:IfDisqusShortname}{block:IfNotDisqusShortname}true{/block:IfNotDisqusShortname};
-            Optica.HIDE_MAP_TAGS = {block:IfHideMappingTags}true{/block:IfHideMappingTags}{block:IfNotHideMappingTags}false{/block:IfNotHideMappingTags};
+            var Journeyman = {};
+            Journeyman.ENDLESS_SCROLLING = {block:IfEndlessScrolling}true{/block:IfEndlessScrolling}{block:IfNotEndlessScrolling}false{/block:IfNotEndlessScrolling};
+            Journeyman.LAYOUT = "{select:Layout}";
+            Journeyman.TITLE_COLOR = "{TitleColor}";
+            Journeyman.ACCENT_COLOR = "{AccentColor}";
+            Journeyman.BACKGROUND_COLOR = "{BackgroundColor}";
+            Journeyman.ENDLESS_NOTES_SCROLLING = {block:IfDisqusShortname}false{/block:IfDisqusShortname}{block:IfNotDisqusShortname}true{/block:IfNotDisqusShortname};
+            Journeyman.HIDE_MAP_TAGS = {block:IfHideMappingTags}true{/block:IfHideMappingTags}{block:IfNotHideMappingTags}false{/block:IfNotHideMappingTags};
         </script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script>!window.jQuery && document.write(unescape('%3Cscript src="http://static.tumblr.com/vr9xgox/sBgmmjhyw/jquery-1.9.1.min.js"%3E%3C/script%3E'));</script>
@@ -840,12 +839,21 @@
 		// =====================
 		
 		// TODO:
+		// - integrate the journeyman script with the main javascript for the theme
+		// - optimize scrolling by only getting and storing post positions once instead of on every scroll event
+		// - eliminate drawer??
+		// - eliminate dependency on underscore.js
+		// - tidy up odd journeyman.js function structure??
+		// - attempt switch to newer Mapbox API
+		
 		// - fix placement of "note" text
 		// - make non-JS post margin larger
 		// - call setPostMargin on window resize
-		// - disable opacity effect in safari
+		
 		// - add group tags (g 1) with auto-zoom to the group
 		//	 	- allow posts to switch sides of the page
+		// - adjust how fade in and out are done for posts
+		// - shrink to narrow layout if wide is greater than half the screen size
 		// - add more vivid color for active marker
 		// - add controls back to map (plus "home" control)
 		// - add text color option
@@ -853,7 +861,6 @@
 		// - what does collapse navigation option do??
 		// - move static files to AWS from Dropbox
 		// - what is calling eventor.nextframe? (flame chart)
-		// - optimize scrolling by only getting and storing post positions once instead of on every scroll event
 		// - use footer instead of javascript to space out last post at the end
 		// - inactivate clicks on hidden posts
 		// - refactor handling of full post list
@@ -862,7 +869,6 @@
 		// - add date to posts / fix date in drawer
 		// - outline title text?
 		// - Fix map width for narrow layout
-		// - Narrower top drawer margin?
 		// - Add option for title & description background
 		// - Make description option work
 		// - Allow custom background map
@@ -878,12 +884,8 @@
 		//		  (try adding one by one instead of bulk add?)
 		//		  (or call setactive immediately after calling add?)
 		//		- entrance animation for markers?
-		// - eliminate cruft from grid layout and remove option
-		// - eliminate dependency on underscore.js
-		// - tidy up odd journeyman.js function structure??
-		// - get rid of everything named optica
+
 		// - map should only show once it has been fully loaded
-		// - integrate the onscroll event with the main javascript for the theme
 		// - make page degrade more elegantly when javascript is disabled (posts not inpost-active)
 		// **1.0!!
 		
@@ -916,13 +918,13 @@
 				$(posts).removeClass("scrolling");
 				if (markers[postID]) {
 					var dest = { "lat": markers[postID].coordinates[1], "lon": markers[postID].coordinates[0] };
-					if (Optica.lastMapMoveDest !== dest) { 
+					if (Journeyman.lastMapMoveDest !== dest) { 
 						if (ease) {
 							map.ease.location(dest).zoom(markers[postID].zoom).optimal(.6);
 						} else {
 							map.centerzoom(dest, markers[postID].zoom);
 						}
-						Optica.lastMapMoveDest = dest;
+						Journeyman.lastMapMoveDest = dest;
 					}
 				}
 			}
@@ -948,17 +950,17 @@
 						googleCoordinates = tagString.replace('place ','').split(/[\s]+/);
 						coordinates[0] = googleCoordinates[1];
 						coordinates[1] = googleCoordinates[0];
-						if (Optica.HIDE_MAP_TAGS) $(this).parent().remove();
+						if (Journeyman.HIDE_MAP_TAGS) $(this).parent().remove();
 					}
 		
 					if (tagString.indexOf("zoom ") >= 0) {
 						var zoomValue = tagString.replace('zoom ','');
 						var isZoomNumber = isNumber(zoomValue);
 						if (isZoomNumber) zoomLevel = parseInt(zoomValue);					
-						if (Optica.HIDE_MAP_TAGS) $(this).parent().remove();	
+						if (Journeyman.HIDE_MAP_TAGS) $(this).parent().remove();	
 					}	
 					
-					if (tagString === "r" && Optica.HIDE_MAP_TAGS) $(this).parent().remove();
+					if (tagString === "r" && Journeyman.HIDE_MAP_TAGS) $(this).parent().remove();
 				} );
 	
 				// if we've removed all the tags, remove the tag list element as well
@@ -1080,15 +1082,6 @@
 			// Set the last section active.
 			if (!active) setActive(posts.length - 1, true);
 		}).debounce(10);
-
-		/* 
-		// Also bind to touch events to do the scrolling animation
-		// TODO: Need to remove the fade in on mobile so that the inactive posts appear immediately
-		// TODO: Need to eliminate the onscroll events on mobile so we don't flickr
-		window.addEventListener('touchstart', function() { $(posts).addClass("scrolling"); } );
-		window.addEventListener('touchend', function() { $(posts).removeClass("scrolling"); } );
-		window.addEventListener('touchleave', function() { $(posts).removeClass("scrolling"); } );
-		*/
 
 		</script>
 		
