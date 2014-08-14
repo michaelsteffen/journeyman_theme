@@ -845,15 +845,18 @@
 		// - eliminate dependency on underscore.js
 		// - tidy up odd journeyman.js function structure??
 		// - attempt switch to newer Mapbox API
+
+		// - shrink to narrow layout if wide is greater than half the screen size
+		// - add group tags (g 1) with auto-zoom to the group
+		//	 	- allow posts to switch sides of the page
+		
+		// - adjust how fade in and out are done for posts
 		
 		// - fix placement of "note" text
 		// - make non-JS post margin larger
 		// - call setPostMargin on window resize
+		// - make images go to lightbox instead of new page
 		
-		// - add group tags (g 1) with auto-zoom to the group
-		//	 	- allow posts to switch sides of the page
-		// - adjust how fade in and out are done for posts
-		// - shrink to narrow layout if wide is greater than half the screen size
 		// - add more vivid color for active marker
 		// - add controls back to map (plus "home" control)
 		// - add text color option
@@ -884,12 +887,12 @@
 		//		  (try adding one by one instead of bulk add?)
 		//		  (or call setactive immediately after calling add?)
 		//		- entrance animation for markers?
-
-		// - map should only show once it has been fully loaded
 		// - make page degrade more elegantly when javascript is disabled (posts not inpost-active)
 		// **1.0!!
 		
-		// - Mobile optimization: 
+		// - map should only show once it has been fully loaded
+		// - improve lightbox
+		// - mobile optimization: 
 		// 		- set map not to display on mobile
 		// 		- test on mobile
 		// **2.0
